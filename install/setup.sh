@@ -28,8 +28,10 @@ elif command -v dnf &>/dev/null; then
         libnotify nss-tools iptables
 fi
 
-echo "-> Installing mitmproxy..."
-apt-get install -y mitmproxy
+echo "-> Installing mitmproxy in virtual environment..."
+apt-get install -y python3-venv
+python3 -m venv /opt/adam-control-venv
+/opt/adam-control-venv/bin/pip install --quiet mitmproxy
 
 # ── Directories ──────────────────────────────────────────────────────────────
 echo "-> Creating directories..."
@@ -69,7 +71,7 @@ cp -rn "$PROJECT_DIR/config/lists/." /etc/adam-control/lists/ 2>/dev/null || tru
 echo "-> Setting up mitmproxy CA certificate..."
 
 # Generate certs (stored in /root/.mitmproxy/)
-mitmdump --ignore-hosts ".*" -p 8079 &
+/opt/adam-control-venv/bin/mitmdump --ignore-hosts ".*" -p 8079 &
 MITM_PID=$!
 sleep 3
 kill $MITM_PID 2>/dev/null || true
@@ -141,7 +143,7 @@ Before=adam-control.service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/mitmdump \
+ExecStart=/opt/adam-control-venv/bin/mitmdump \
     --mode transparent \
     --listen-port 8080 \
     --set block_global=false \
