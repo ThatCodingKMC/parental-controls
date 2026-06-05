@@ -8,7 +8,7 @@ machine, managed remotely over SSH from your machine.
 ## Your scripts (run from your machine)
 
 ```bash
-./deploy.sh              # push config + lists, restart daemon (~5 seconds)
+./deploy.sh              # push changes, restart daemon (~5 seconds)
 ./grant.sh free 60       # give 60 min of free time right now
 ./grant.sh free 30 +     # extend current grant by 30 min
 ./grant.sh work 45       # force work mode for 45 min
@@ -84,7 +84,7 @@ config/
 
 ## SSH setup (already done)
 
-SSH config at `~/.ssh/config`:
+SSH config at `~/.ssh/config` on your machine:
 
 ```
 Host adams-pc
@@ -101,42 +101,22 @@ Adam cannot stop the daemon, proxy, or SSH server.
 ## Installing on his machine (first time)
 
 ```bash
-# 1. Copy project to his machine
-scp -r ~/Desktop/projectsavingprivateadam parent@192.168.1.81:~/
-
-# 2. SSH in and run installer
-ssh adams-pc
-cd ~/projectsavingprivateadam
-sudo bash install/setup.sh adam
-
-# 3. Verify
-./status.sh
-```
-
----
-
-## Setting up git sync (one time, on Adam's machine)
-
-This lets deploy.sh use `git pull` instead of SCP — cleaner and updates
-agent code as well as config.
-
-```bash
-# On your machine first — push to a private GitHub repo
+# 1. On your machine — push to a private GitHub repo
 cd ~/Desktop/projectsavingprivateadam
 git init && git add . && git commit -m "initial"
 git remote add origin git@github.com:YOURUSERNAME/REPONAME.git
 git push -u origin main
 
-# Now SSH into Adam's machine
+# 2. SSH into Adam's machine
 ssh adams-pc
 
-# Generate a read-only deploy key
+# 3. Set up a read-only deploy key for GitHub
 sudo -u parent ssh-keygen -t ed25519 -f /home/parent/.ssh/github_deploy -N ""
 cat /home/parent/.ssh/github_deploy.pub
-# → Copy this output, add it to GitHub: repo → Settings → Deploy keys
+# → Copy this, add it to GitHub: repo → Settings → Deploy keys
 #   Read-only, do NOT check write access
 
-# Tell SSH to use this key for GitHub
+# 4. Tell SSH to use this key for GitHub
 sudo -u parent bash -c 'cat >> /home/parent/.ssh/config << EOF
 
 Host github.com
@@ -144,13 +124,19 @@ Host github.com
     IdentitiesOnly yes
 EOF'
 
-# Clone the repo
+# 5. Clone and install
 sudo -u parent git clone git@github.com:YOURUSERNAME/REPONAME.git \
     /home/parent/projectsavingprivateadam
+cd /home/parent/projectsavingprivateadam
+sudo bash install/setup.sh adam
+
+# 6. Verify
+exit   # back to your machine
+./status.sh
 ```
 
-After this, `./deploy.sh` on your machine pushes to GitHub and pulls on
-Adam's machine in one step.
+> **No GitHub?** Use `scp -r ~/Desktop/projectsavingprivateadam parent@192.168.1.81:~/`
+> to copy files directly, then SSH in and run the installer from `~/projectsavingprivateadam`.
 
 ---
 
