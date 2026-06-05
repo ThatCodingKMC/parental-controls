@@ -1,0 +1,3 @@
+# Reddit — blocked at all times, in every mode
+reddit.com
+old.reddit.com

@@ -1,0 +1,10 @@
+# URL patterns blocked during work mode (on top of blocked domains).
+# These are applied even if a domain is in the whitelist.
+
+# Khan Academy: block the user-made games/programs section
+# Personal projects use the same URL structure, so they are also blocked.
+# Use ./grant.sh free 30 to give temporary access for project work.
+khanacademy\.org/(computer-programming|cs)(/|$)
+
+# Block YouTube search for non-educational queries (blocks the results page)
+# youtube\.com/results\?search_query=(?!.*tutorial|.*lesson|.*how.to|.*math|.*science)

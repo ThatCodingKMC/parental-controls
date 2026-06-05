@@ -1,0 +1,49 @@
+# WHITELIST for work mode.
+# If this file has any entries, ONLY these domains are allowed during work windows.
+# Delete all entries (or leave only comments) to switch to blacklist-only mode.
+
+# ── Eastern Florida State College (EFSC) ─────────────────────────────────────
+easternflorida.edu
+# Canvas LMS (add whichever subdomain they use)
+efsc.instructure.com
+canvas.easternflorida.edu
+# Student portal / Brightspace if used
+brightspace.com
+
+# ── Florida Virtual School (FLVS) ────────────────────────────────────────────
+flvs.net
+
+# ── General school / educational ─────────────────────────────────────────────
+khanacademy.org
+wikipedia.org
+duolingo.com
+scratch.mit.edu
+quizlet.com
+desmos.com
+wolframalpha.com
+brainpop.com
+ixl.com
+
+# ── Google school tools ───────────────────────────────────────────────────────
+docs.google.com
+drive.google.com
+classroom.google.com
+mail.google.com
+accounts.google.com
+google.com          # needed for search and auth redirects
+
+# ── Microsoft (EFSC may use Microsoft 365) ───────────────────────────────────
+office.com
+microsoft.com
+microsoftonline.com
+sharepoint.com
+teams.microsoft.com
+outlook.com
+
+# ── Video conferencing (FLVS uses Zoom for live classes) ─────────────────────
+zoom.us
+zoomgov.com
+
+# ── Reference ─────────────────────────────────────────────────────────────────
+dictionary.com
+merriam-webster.com

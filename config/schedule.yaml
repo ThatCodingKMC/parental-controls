@@ -1,0 +1,162 @@
+# adam-control configuration
+# Edit this file and run ./deploy.sh to push changes to Adam's computer.
+
+target_user: adam
+check_interval: 53
+
+# ─── Computer ON/OFF Hours ───────────────────────────────────────────────────
+# Hard lock — outside these hours the screen locks. Nothing overrides this.
+computer_hours:
+  on:  "06:30"
+  off: "00:30"
+
+# ─── Total Daily Screen Time Cap ─────────────────────────────────────────────
+# Hard cap on total active minutes per day. 0 = no cap.
+daily_limit:
+  weekday: 0
+  weekend: 0
+
+# ─── Mode Strategy ───────────────────────────────────────────────────────────
+# "schedule" → fixed clock windows (see schedule: below)
+# "budget"   → daily free-time pool, usable whenever
+mode_strategy: budget
+
+# ── Option A: Schedule Windows ───────────────────────────────────────────────
+schedule:
+  weekday:
+    - start: "18:30"
+      end: "19:30"
+      mode: work
+    - start: "19:30"
+      end: "22:00"
+      mode: free
+    - start: "22:00"
+      end: "00:30"
+      mode: work
+
+  weekend:
+    - start: "09:00"
+      end: "12:00"
+      mode: work
+    - start: "12:00"
+      end: "16:00"
+      mode: free
+    - start: "16:00"
+      end: "22:00"
+      mode: work
+    - start: "22:00"
+      end: "00:30"
+      mode: free
+
+# ── Option B: Budget ──────────────────────────────────────────────────────────
+# Free budget can only be spent during available_hours (optional).
+# Change start to e.g. "17:00" to force work mode before then.
+budget:
+  free_minutes:
+    weekday: 240
+    weekend: 240
+  available_hours:
+    start: "00:00"
+    end:   "23:59"
+
+# ─── Blocking ────────────────────────────────────────────────────────────────
+# Two tiers only:
+#
+#   always  → blocked in every mode, 24/7
+#   work    → work mode is whitelist-only: anything not in allow_domains is blocked.
+#             block_urls and block_apps apply on top of the whitelist.
+#
+# Drop .txt files into config/lists/<tier>/blocked/ for domains,
+# config/lists/<tier>/blocked_apps.txt for apps.
+# File values and inline values are merged.
+
+blocking:
+
+  always:
+    block_domains:
+      - pornhub.com
+      - xvideos.com
+      - xhamster.com
+      - xnxx.com
+      - redtube.com
+      - rule34.xxx
+    block_urls:
+      - 'reddit\.com/r/(nsfw|gonewild|porn|sex|realgirls|amateur|rule34|hentai)'
+      - 'youtube\.com/shorts'
+    block_apps: []
+
+  work:
+    # Whitelist — ONLY these domains pass during work mode.
+    # Everything else is blocked automatically. No separate blacklist needed.
+    allow_domains:
+      - easternflorida.edu
+      - efsc.instructure.com
+      - canvas.easternflorida.edu
+      - brightspace.com
+      - flvs.net
+      - khanacademy.org
+      - wikipedia.org
+      - duolingo.com
+      - scratch.mit.edu
+      - quizlet.com
+      - desmos.com
+      - wolframalpha.com
+      - docs.google.com
+      - drive.google.com
+      - classroom.google.com
+      - mail.google.com
+      - accounts.google.com
+      - google.com
+      - office.com
+      - microsoft.com
+      - microsoftonline.com
+      - sharepoint.com
+      - teams.microsoft.com
+      - outlook.com
+      - zoom.us
+      - zoomgov.com
+      - dictionary.com
+      - merriam-webster.com
+    # URL patterns blocked even on whitelisted sites
+    block_urls:
+      - 'khanacademy\.org/(computer-programming|cs)(/|$)'
+    # Apps killed during work mode
+    block_apps:
+      - steam
+      - Discord
+      - discord
+      - roblox
+      - minecraft
+      - lutris
+      - heroic
+      - vlc
+
+# ─── Per-Site Time Limits ─────────────────────────────────────────────────────
+site_limits:
+  - site: youtube.com
+    minutes: 120
+    applies_in: [free]
+  - site: twitch.tv
+    minutes: 30
+    applies_in: [free]
+  - site: roblox.com
+    minutes: 60
+    applies_in: [free]
+
+# ─── Per-App Time Limits ──────────────────────────────────────────────────────
+app_limits:
+  - app: steam
+    minutes: 90
+    applies_in: [free]
+  - app: minecraft
+    minutes: 60
+    applies_in: [free]
+  - app: roblox
+    minutes: 60
+    applies_in: [free]
+  - app: discord
+    minutes: 120
+    applies_in: [free]
+
+# ─── Notifications ───────────────────────────────────────────────────────────
+lock_message: "Computer time is over. Come find me if you need more time."

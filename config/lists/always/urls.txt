@@ -1,0 +1,17 @@
+# URL path patterns — blocked at all times (Python regex, one per line).
+# These work on HTTPS sites too (via proxy).
+# Lines starting with # are comments.
+
+# YouTube: block Shorts tab
+youtube\.com/shorts
+
+# ── Search engine porn backup patterns ───────────────────────────────────────
+# Safe search is enforced at the proxy level (see proxy_addon.py), which is
+# more robust. These patterns are a secondary layer catching obvious leakage.
+
+# Block Google/Bing image search entirely (most common vector for explicit content)
+(www\.)?google\.[a-z.]+/search\?.*tbm=isch
+(www\.)?bing\.com/images/search
+
+# Block searches containing explicit terms across major search engines
+(google|bing|yahoo|duckduckgo|search\.yahoo)\.[a-z.]+/search.*[?&]q=.*\b(porn|xxx|nude|naked|hentai|nsfw|onlyfans|camgirl|escort|pussy|ass|boobs|tits|vagina)\b

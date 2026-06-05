@@ -1,0 +1,7 @@
+# Apps killed at all times, regardless of mode.
+# One process name per line (case-insensitive substring match).
+
+# Example: always kill a VPN that could bypass controls
+# expressvpn
+# nordvpn
+# protonvpn
