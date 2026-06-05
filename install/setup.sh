@@ -29,7 +29,7 @@ elif command -v dnf &>/dev/null; then
 fi
 
 echo "-> Installing mitmproxy..."
-apt-get install -y python3-mitmproxy
+apt-get install -y mitmproxy
 
 # ── Directories ──────────────────────────────────────────────────────────────
 echo "-> Creating directories..."
