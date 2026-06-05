@@ -115,6 +115,45 @@ sudo bash install/setup.sh adam
 
 ---
 
+## Setting up git sync (one time, on Adam's machine)
+
+This lets deploy.sh use `git pull` instead of SCP — cleaner and updates
+agent code as well as config.
+
+```bash
+# On your machine first — push to a private GitHub repo
+cd ~/Desktop/projectsavingprivateadam
+git init && git add . && git commit -m "initial"
+git remote add origin git@github.com:YOURUSERNAME/REPONAME.git
+git push -u origin main
+
+# Now SSH into Adam's machine
+ssh adams-pc
+
+# Generate a read-only deploy key
+sudo -u parent ssh-keygen -t ed25519 -f /home/parent/.ssh/github_deploy -N ""
+cat /home/parent/.ssh/github_deploy.pub
+# → Copy this output, add it to GitHub: repo → Settings → Deploy keys
+#   Read-only, do NOT check write access
+
+# Tell SSH to use this key for GitHub
+sudo -u parent bash -c 'cat >> /home/parent/.ssh/config << EOF
+
+Host github.com
+    IdentityFile /home/parent/.ssh/github_deploy
+    IdentitiesOnly yes
+EOF'
+
+# Clone the repo
+sudo -u parent git clone git@github.com:YOURUSERNAME/REPONAME.git \
+    /home/parent/projectsavingprivateadam
+```
+
+After this, `./deploy.sh` on your machine pushes to GitHub and pulls on
+Adam's machine in one step.
+
+---
+
 ## Adam's status page
 
 He can bookmark `http://localhost:8765` in his browser. Shows:
