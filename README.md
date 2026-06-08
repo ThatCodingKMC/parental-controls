@@ -102,7 +102,7 @@ Adam cannot stop the daemon, proxy, or SSH server.
 
 ```bash
 # 1. On your machine — push to a private GitHub repo
-cd ~/Desktop/projectsavingprivateadam
+cd ~/Desktop/parental-controls
 git init && git add . && git commit -m "initial"
 git remote add origin git@github.com:YOURUSERNAME/REPONAME.git
 git push -u origin main
@@ -126,8 +126,8 @@ EOF'
 
 # 5. Clone and install
 sudo -u parent git clone git@github.com:YOURUSERNAME/REPONAME.git \
-    /home/parent/projectsavingprivateadam
-cd /home/parent/projectsavingprivateadam
+    /home/parent/parental-controls
+cd /home/parent/parental-controls
 sudo bash install/setup.sh adam
 
 # 6. Verify
@@ -135,8 +135,8 @@ exit   # back to your machine
 ./status.sh
 ```
 
-> **No GitHub?** Use `scp -r ~/Desktop/projectsavingprivateadam parent@192.168.1.81:~/`
-> to copy files directly, then SSH in and run the installer from `~/projectsavingprivateadam`.
+> **No GitHub?** Use `scp -r ~/Desktop/parental-controls parent@192.168.1.81:~/`
+> to copy files directly, then SSH in and run the installer from `~/parental-controls`.
 
 ---
 

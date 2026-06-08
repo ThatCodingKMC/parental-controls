@@ -32,7 +32,7 @@ git push
 # Pull on Adam's machine and restart
 echo "-> Pulling on Adam's machine..."
 ssh "$TARGET" "
-    cd ~/projectsavingprivateadam && \
+    cd ~/parental-controls && \
     git pull && \
     sudo cp agent/*.py /opt/adam-control/ && \
     sudo cp -r config/lists/. /etc/adam-control/lists/ && \
