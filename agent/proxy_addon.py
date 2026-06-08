@@ -158,12 +158,13 @@ class AdamControl:
             p = Path(USAGE_FILE)
             data: dict = json.loads(p.read_text()) if p.exists() else {}
 
-            bucket: list = data.get(key, [])
-            # Keep only timestamps from the last 2 minutes (sliding window)
-            cutoff = now - 120
-            bucket = [t for t in bucket if t > cutoff]
-            bucket.append(now)
-            data[key] = bucket
+            # Store the current minute-bucket number rather than raw timestamps.
+            # Max 1440 entries per domain per day regardless of request volume.
+            minute_bucket = int(now // 60)
+            buckets: list = data.get(key, [])
+            if minute_bucket not in buckets:
+                buckets.append(minute_bucket)
+            data[key] = buckets
 
             # Purge old days
             today_ord = date.today().toordinal()

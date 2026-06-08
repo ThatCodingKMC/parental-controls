@@ -5,6 +5,7 @@
 # ── Eastern Florida State College (EFSC) ─────────────────────────────────────
 easternflorida.edu
 # Canvas LMS (add whichever subdomain they use)
+instructure.com
 efsc.instructure.com
 canvas.easternflorida.edu
 # Student portal / Brightspace if used
@@ -12,6 +13,7 @@ brightspace.com
 
 # ── Florida Virtual School (FLVS) ────────────────────────────────────────────
 flvs.net
+flvsgl.com
 
 # ── General school / educational ─────────────────────────────────────────────
 khanacademy.org

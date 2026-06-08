@@ -79,7 +79,7 @@ def _build_page() -> str:
     def site_mins(domain):
         key = f"{domain}:{today}"
         ts = site_data.get(key, [])
-        return len(set(int(t) // 60 for t in ts)) if ts else 0
+        return len(set(ts)) if ts else 0
 
     # Load per-app usage from usage.json
     usage_data = _read(USAGE_FILE)
@@ -230,7 +230,7 @@ def _build_page() -> str:
         if not key.endswith(f":{today}"):
             continue
         domain = key.rsplit(":", 1)[0]
-        mins = len(set(int(t) // 60 for t in timestamps)) if timestamps else 0
+        mins = len(set(timestamps)) if timestamps else 0
         if mins == 0:
             continue
         whitelisted = _in_whitelist(domain)

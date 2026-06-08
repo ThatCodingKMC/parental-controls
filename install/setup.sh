@@ -111,9 +111,7 @@ fi
 
 # ── iptables persistence ──────────────────────────────────────────────────────
 echo "-> Configuring iptables persistence..."
-if command -v iptables-save &>/dev/null; then
-    apt-get install -y iptables-persistent &>/dev/null 2>&1 || true
-fi
+DEBIAN_FRONTEND=noninteractive apt-get install -y iptables-persistent &>/dev/null 2>&1 || true
 
 # ── systemd services ──────────────────────────────────────────────────────────
 echo "-> Installing systemd services..."

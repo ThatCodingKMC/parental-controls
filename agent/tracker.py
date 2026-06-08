@@ -162,8 +162,7 @@ def get_site_usage_minutes(domain: str) -> int:
     timestamps = data.get(key, [])
     if not timestamps:
         return 0
-    buckets = set(int(t) // 60 for t in timestamps)
-    return len(buckets)
+    return len(set(timestamps))
 
 
 def is_site_limit_reached(domain: str, limit_minutes: int) -> bool:
