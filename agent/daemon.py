@@ -292,13 +292,15 @@ def _free_site_active(config: dict, interval: int) -> tuple:
     except Exception:
         return False, ""
 
-    cutoff = _time.time() - interval - 10
+    # site_usage.json stores minute-bucket numbers (int(epoch // 60)), so the
+    # recency cutoff must be expressed in the same units.
+    cutoff_bucket = int((_time.time() - interval - 10) // 60)
     today  = str(_date.today())
 
     for key, timestamps in data.items():
         if not key.endswith(f":{today}"):
             continue
-        if not any(t >= cutoff for t in timestamps):
+        if not any(t >= cutoff_bucket for t in timestamps):
             continue
         domain = key.rsplit(":", 1)[0]
         if not any(_domain_matches(domain, w) for w in work_whitelist):
