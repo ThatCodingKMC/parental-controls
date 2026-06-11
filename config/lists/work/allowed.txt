@@ -49,3 +49,22 @@ zoomgov.com
 # ── Reference ─────────────────────────────────────────────────────────────────
 dictionary.com
 merriam-webster.com
+
+# ── Infrastructure / static assets ───────────────────────────────────────────
+# Helper domains that load *inside* the whitelisted sites above (fonts, scripts,
+# auth, images). Without these, doing schoolwork on Google/Microsoft would burn
+# free-time budget. These are vendor-specific static hosts, NOT browsable
+# destinations — do NOT add shared CDNs (cloudfront, amazonaws, azureedge,
+# akamai, fastly): those host the whole internet and would be a bypass.
+gstatic.com
+googleapis.com
+googleusercontent.com
+gvt1.com
+gvt2.com
+msauth.net
+msftauth.net
+msecnd.net
+office.net
+officeapps.live.com
+sharepointonline.com
+live.com
