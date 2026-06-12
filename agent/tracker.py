@@ -155,14 +155,39 @@ def format_budget_report(username: str, limit_minutes: int) -> str:
 
 # ── Per-site usage (written by proxy, read here) ──────────────────────────────
 
+def _suffix_pattern(domain: str) -> str:
+    """If domain is a suffix group like '*.io' or '.io', return the bare
+    suffix ('.io'); otherwise return '' (exact-domain match)."""
+    if domain.startswith("*."):
+        return domain[1:]
+    if domain.startswith(".") and domain.count(".") == 1:
+        return domain
+    return ""
+
+
 def get_site_usage_minutes(domain: str) -> int:
-    """Minutes spent on domain today (1-min resolution from proxy timestamps)."""
-    data = _load(SITE_USAGE_FILE)
-    key = f"{domain}:{_today()}"
-    timestamps = data.get(key, [])
-    if not timestamps:
-        return 0
-    return len(set(timestamps))
+    """Minutes spent on a site today (1-min resolution from proxy buckets).
+
+    `domain` may be an exact domain (youtube.com) or a suffix group (*.io),
+    in which case distinct active minutes are unioned across every matching
+    host — i.e. total wall-clock time on any .io site, not the sum per host.
+    """
+    data   = _load(SITE_USAGE_FILE)
+    today  = _today()
+    suffix = _suffix_pattern(domain)
+
+    if suffix:
+        buckets: set = set()
+        for key, ts in data.items():
+            if not key.endswith(f":{today}"):
+                continue
+            host = key.rsplit(":", 1)[0]
+            if host.endswith(suffix):
+                buckets.update(ts)
+        return len(buckets)
+
+    timestamps = data.get(f"{domain}:{today}", [])
+    return len(set(timestamps)) if timestamps else 0
 
 
 def is_site_limit_reached(domain: str, limit_minutes: int) -> bool:

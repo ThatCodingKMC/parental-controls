@@ -50,6 +50,11 @@ zoomgov.com
 dictionary.com
 merriam-webster.com
 
+# ── Personal ──────────────────────────────────────────────────────────────────
+# His email — whitelisted so checking mail never burns free-time budget,
+# and stays reachable during work mode.
+proton.me
+
 # ── Infrastructure / static assets ───────────────────────────────────────────
 # Helper domains that load *inside* the whitelisted sites above (fonts, scripts,
 # auth, images). Without these, doing schoolwork on Google/Microsoft would burn

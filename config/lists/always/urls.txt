@@ -2,8 +2,13 @@
 # These work on HTTPS sites too (via proxy).
 # Lines starting with # are comments.
 
-# YouTube: block Shorts tab
+# YouTube: block Shorts.
+#   1st line — direct navigation to youtube.com/shorts/<id>
+#   2nd line — the Shorts-only internal API ("reel"); this is what kills
+#   in-app swiping/tapping into Shorts. Regular videos use a different
+#   endpoint (youtubei/v1/player + /next), so normal YouTube still works.
 youtube\.com/shorts
+youtubei/v1/reel
 
 # ── Search engine porn backup patterns ───────────────────────────────────────
 # Safe search is enforced at the proxy level (see proxy_addon.py), which is

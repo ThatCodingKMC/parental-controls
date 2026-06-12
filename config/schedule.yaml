@@ -53,8 +53,8 @@ schedule:
 # Change start to e.g. "17:00" to force work mode before then.
 budget:
   free_minutes:
-    weekday: 240
-    weekend: 240
+    weekday: 180
+    weekend: 180
   available_hours:
     start: "00:00"
     end:   "23:59"
@@ -132,6 +132,8 @@ blocking:
       - vlc
 
 # ─── Per-Site Time Limits ─────────────────────────────────────────────────────
+# A "site" can be an exact domain (youtube.com) or a suffix group (*.io),
+# which aggregates wall-clock minutes across every host sharing that suffix.
 site_limits:
   - site: youtube.com
     minutes: 120
@@ -141,6 +143,9 @@ site_limits:
     applies_in: [free]
   - site: roblox.com
     minutes: 60
+    applies_in: [free]
+  - site: "*.io"          # all .io browser games combined
+    minutes: 120
     applies_in: [free]
 
 # ─── Per-App Time Limits ──────────────────────────────────────────────────────

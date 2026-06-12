@@ -77,8 +77,15 @@ def _build_page() -> str:
     site_data = _read(SITE_FILE)
 
     def site_mins(domain):
-        key = f"{domain}:{today}"
-        ts = site_data.get(key, [])
+        # Suffix group like "*.io" → union active minutes across matching hosts
+        if domain.startswith("*.") or (domain.startswith(".") and domain.count(".") == 1):
+            suffix = domain[1:] if domain.startswith("*") else domain
+            buckets = set()
+            for key, ts in site_data.items():
+                if key.endswith(f":{today}") and key.rsplit(":", 1)[0].endswith(suffix):
+                    buckets.update(ts)
+            return len(buckets)
+        ts = site_data.get(f"{domain}:{today}", [])
         return len(set(ts)) if ts else 0
 
     # Load per-app usage from usage.json

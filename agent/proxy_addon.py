@@ -135,14 +135,23 @@ class AdamControl:
             except re.error:
                 pass
 
-        # Per-site time limits reached
+        # Per-site time limits reached (site may be an exact domain or a
+        # suffix group like "*.io")
         root = self._root_domain(host)
+        bare_host = host.lower().split(":")[0]
         for site in r.get("site_limits_reached", []):
-            if self._domain_matches(host, site):
+            if site.startswith("*.") or (site.startswith(".") and site.count(".") == 1):
+                suffix  = site[1:] if site.startswith("*") else site
+                matched = bare_host.endswith(suffix)
+                label   = site.lstrip("*")            # "*.io" -> ".io"
+            else:
+                matched = self._domain_matches(host, site)
+                label   = root
+            if matched:
                 return (
                     True,
-                    f"{root} — time limit",
-                    f"You've used your daily allowance for {root}. Come back tomorrow.",
+                    f"{label} — time limit",
+                    f"You've used your daily allowance for {label}. Come back tomorrow.",
                 )
 
         return False, "", ""
