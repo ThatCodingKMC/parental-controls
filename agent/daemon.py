@@ -539,9 +539,11 @@ def run_cycle(config: dict):
         if _last_mode != "locked":
             log.info("→ LOCKED (%s)", source)
             enforcer.clear_hosts_rules()
-            enforcer.lock_session(username, lock_msg)
+            # First locked cycle: warn, give a short grace, then log him out.
+            enforcer.enforce_logout(username, lock_msg, grace_seconds=10)
         else:
-            enforcer.lock_session(username)
+            # Keep enforcing each cycle so a re-login gets killed too.
+            enforcer.enforce_logout(username)
 
     else:
         rules = build_proxy_rules(config, mode, username)
@@ -549,7 +551,7 @@ def run_cycle(config: dict):
 
         if _last_mode == "locked":
             log.info("→ %s (%s)", mode.upper(), source)
-            enforcer.unlock_session(username)
+            enforcer.restore_login()   # bring lightdm back at on-hours
         elif _last_mode != mode:
             log.info("→ %s (%s)", mode.upper(), source)
 

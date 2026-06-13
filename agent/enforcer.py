@@ -7,6 +7,7 @@ import logging
 import os
 import signal
 import subprocess
+import time
 from pathlib import Path
 from typing import List
 
@@ -21,8 +22,45 @@ PROXY_ADDON         = "/opt/adam-control/proxy_addon.py"
 PROXY_PID_FILE      = "/var/run/adam-control-proxy.pid"
 IPTABLES_CHAIN      = "ADAM_PROXY"
 
+DISPLAY_MANAGER     = "lightdm"   # Pi OS autologins adam via this
 
-# ── Session lock / unlock ─────────────────────────────────────────────────────
+
+def _run(cmd: list):
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+    except Exception as e:
+        log.warning("cmd failed %s: %s", cmd, e)
+        return None
+
+
+# ── Off-hours logout (hard) ───────────────────────────────────────────────────
+
+def enforce_logout(username: str, message: str = "", grace_seconds: int = 0):
+    """Actually end the user's GUI session so games/apps stop.
+
+    A plain screen lock is a no-op here (no locker is wired to the lock
+    signal, and the machine autologins via lightdm). So we stop the display
+    manager — otherwise autologin instantly respawns the session — then
+    terminate the user's logind sessions and kill any leftover processes.
+    Reversed at on-hours by restore_login().
+    """
+    if message:
+        _notify(username, "Computer Off for the Night", message, urgency="critical")
+    if grace_seconds:
+        time.sleep(grace_seconds)
+    _run(["systemctl", "stop", DISPLAY_MANAGER])   # prevents autologin respawn
+    _run(["loginctl", "terminate-user", username])
+    _run(["pkill", "-KILL", "-u", username])       # backstop for stragglers
+    log.info("Enforced logout for %s", username)
+
+
+def restore_login():
+    """Bring the login screen back when on-hours resume."""
+    _run(["systemctl", "start", DISPLAY_MANAGER])
+    log.info("Restored login (started %s)", DISPLAY_MANAGER)
+
+
+# ── Session lock / unlock (legacy, kept for reference) ────────────────────────
 
 def lock_session(username: str, message: str = ""):
     try:
