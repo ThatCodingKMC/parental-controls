@@ -5,10 +5,12 @@ target_user: adam
 check_interval: 53
 
 # ─── Computer ON/OFF Hours ───────────────────────────────────────────────────
-# Hard lock — outside these hours the screen locks. Nothing overrides this.
+# Hard lock — outside these hours he is logged out. Nothing overrides this.
+# NOTE: keys MUST stay quoted ("on"/"off"). Unquoted on/off are read by YAML
+# as booleans (true/false), which silently breaks the lock.
 computer_hours:
-  on:  "06:30"
-  off: "00:30"
+  "on":  "06:30"   # computer becomes usable at this time
+  "off": "00:30"   # computer logs out / locks at this time
 
 # ─── Total Daily Screen Time Cap ─────────────────────────────────────────────
 # Hard cap on total active minutes per day. 0 = no cap.

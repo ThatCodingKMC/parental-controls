@@ -124,12 +124,29 @@ def _in_window(t: dtime, start: dtime, end: dtime) -> bool:
     return t >= start or t < end  # crosses midnight
 
 
+def _hours_on_off(config: dict) -> tuple:
+    """Read computer_hours on/off robustly.
+
+    Bare `on:`/`off:` in YAML are coerced to the booleans True/False (the
+    "Norway problem"), so a key lookup for "on"/"off" silently misses and the
+    lock never engages. Accept every form — quoted strings, the coerced
+    booleans, and wake/sleep aliases — and warn loudly if none are found.
+    """
+    h = config.get("computer_hours", {}) or {}
+    on  = h.get("on",  h.get(True,  h.get("wake")))
+    off = h.get("off", h.get(False, h.get("sleep")))
+    if on is None or off is None:
+        log.warning("computer_hours has no usable on/off (keys=%s) — lock disabled",
+                    list(h.keys()))
+        on  = on  or "00:00"
+        off = off or "23:59"
+    return str(on), str(off)
+
+
 def _is_on_hours(config: dict) -> bool:
-    hours = config.get("computer_hours", {})
-    on  = _parse_time(hours.get("on",  "00:00"))
-    off = _parse_time(hours.get("off", "23:59"))
+    on, off = _hours_on_off(config)
     now = datetime.now().time().replace(second=0, microsecond=0)
-    return _in_window(now, on, off)
+    return _in_window(now, _parse_time(on), _parse_time(off))
 
 
 def _schedule_mode(config: dict) -> str:
