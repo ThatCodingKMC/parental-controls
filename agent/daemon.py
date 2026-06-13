@@ -48,6 +48,11 @@ log = logging.getLogger("daemon")
 _last_mode: Optional[str]     = None
 _last_counting: Optional[bool] = None
 
+# Sticky activity category — survives quiet periods (persistent apps, idle)
+# so the budget keeps counting until he actually switches to schoolwork.
+_last_category: Optional[str] = None   # "free" | "work" | None
+_last_trigger: str            = ""
+
 # Warning state — reset when coming out of locked
 _warned_budget: set   = set()   # {5, 1} minutes warned
 _warned_session: set  = set()
@@ -267,10 +272,47 @@ def _domain_matches(domain: str, pattern: str) -> bool:
     return domain == pattern or domain.endswith("." + pattern)
 
 
-def _free_site_active(config: dict, interval: int) -> tuple:
+# Whitelisted "helper" domains (CDN / auth / static assets) load alongside
+# basically every site, so they're neutral for classification: they never mark
+# activity as free, and on their own they don't mark it as schoolwork either.
+_HELPER_DOMAINS = {
+    "gstatic.com", "googleapis.com", "googleusercontent.com", "gvt1.com",
+    "gvt2.com", "msauth.net", "msftauth.net", "msecnd.net", "office.net",
+    "officeapps.live.com", "sharepointonline.com", "live.com",
+}
+
+LAST_CAT_FILE = "/var/lib/adam-control/last_category.json"
+
+
+def _load_last_category() -> tuple:
+    try:
+        d = json.loads(Path(LAST_CAT_FILE).read_text())
+        return d.get("category"), d.get("trigger", "")
+    except Exception:
+        return None, ""
+
+
+def _save_last_category(category: Optional[str], trigger: str):
+    try:
+        Path(LAST_CAT_FILE).write_text(
+            json.dumps({"category": category, "trigger": trigger})
+        )
+    except Exception:
+        pass
+
+
+def _recent_site_category(config: dict, window_sec: int) -> tuple:
     """
-    Return (detected: bool, trigger: str).
-    Free activity = any domain visited that is NOT on the work whitelist.
+    Classify recent browser activity from site_usage.json.
+
+    Returns (category, trigger):
+      "free" + domain → a non-whitelisted site was hit within the window
+      "work" + ""     → only real school sites were hit (no free, no helpers)
+      None   + ""     → nothing classifiable in the window (quiet / idle)
+
+    Any single non-whitelisted hit wins (→ free), matching the non-gameable
+    rule "any non-school activity counts." Helper/CDN domains are ignored so
+    they neither trigger counting nor mask it during schoolwork.
     """
     import time as _time
     from datetime import date as _date
@@ -279,34 +321,38 @@ def _free_site_active(config: dict, interval: int) -> tuple:
         list(config.get("blocking", {}).get("work", {}).get("allow_domains") or [])
         + _load_allowed_file("work")
     )
-
     if not work_whitelist:
-        log.warning("Work whitelist is empty — cannot detect free site activity")
-        return False, ""
+        log.warning("Work whitelist is empty — cannot classify activity")
+        return None, ""
 
     try:
-        p = Path("/var/lib/adam-control/site_usage.json")
-        if not p.exists():
-            return False, ""
-        data = json.loads(p.read_text())
+        data = json.loads(Path("/var/lib/adam-control/site_usage.json").read_text())
     except Exception:
-        return False, ""
+        return None, ""
 
-    # site_usage.json stores minute-bucket numbers (int(epoch // 60)), so the
-    # recency cutoff must be expressed in the same units.
-    cutoff_bucket = int((_time.time() - interval - 10) // 60)
-    today  = str(_date.today())
+    cutoff_bucket = int((_time.time() - window_sec) // 60)
+    today = str(_date.today())
 
-    for key, timestamps in data.items():
-        if not key.endswith(f":{today}"):
+    free_domain = ""
+    has_work = False
+    for key, buckets in data.items():
+        if not key.endswith(f":{today}") or not buckets:
             continue
-        if not any(t >= cutoff_bucket for t in timestamps):
+        if max(buckets) < cutoff_bucket:
             continue
         domain = key.rsplit(":", 1)[0]
-        if not any(_domain_matches(domain, w) for w in work_whitelist):
-            return True, domain
+        if any(_domain_matches(domain, h) for h in _HELPER_DOMAINS):
+            continue  # neutral
+        if any(_domain_matches(domain, w) for w in work_whitelist):
+            has_work = True
+        else:
+            free_domain = domain  # any free hit wins
 
-    return False, ""
+    if free_domain:
+        return "free", free_domain
+    if has_work:
+        return "work", ""
+    return None, ""
 
 
 def _free_app_active(config: dict) -> tuple:
@@ -325,17 +371,39 @@ def _free_app_active(config: dict) -> tuple:
 
 
 def _free_activity_detected(config: dict, interval: int) -> tuple:
-    """Return (detected: bool, trigger: str, kind: str)."""
-    # VPN = automatic free time, regardless of what sites/apps are visible
+    """
+    Return (counting: bool, trigger: str, kind: str).
+
+    VPN or a running native free app always counts. Browser activity uses a
+    *sticky* category: once he's on a free site the budget keeps counting
+    through quiet periods (persistent apps like web Discord, loaded videos,
+    .io games) until a navigation to a school site flips him to "work".
+    Without stickiness the budget barely moved, since loaded apps make almost
+    no fresh HTTP requests for the proxy to see.
+    """
+    global _last_category, _last_trigger
+
+    # VPN and native free apps are unambiguous — count immediately.
     vpn_hit, vpn_name = enforcer.vpn_active()
     if vpn_hit:
         return True, vpn_name, "vpn"
-    site_hit, site_name = _free_site_active(config, interval)
-    if site_hit:
-        return True, site_name, "site"
     app_hit, app_name = _free_app_active(config)
     if app_hit:
         return True, app_name, "app"
+
+    # Browser activity, with sticky category across quiet gaps.
+    window = max(interval * 3, 180)
+    category, trigger = _recent_site_category(config, window)
+
+    if category is None:
+        # Nothing observed this window — hold the last known category.
+        category, trigger = _last_category, _last_trigger
+    elif category != _last_category or (trigger and trigger != _last_trigger):
+        _last_category, _last_trigger = category, trigger
+        _save_last_category(category, trigger)
+
+    if category == "free":
+        return True, trigger or "recent activity", "site"
     return False, "", ""
 
 
@@ -577,11 +645,15 @@ def _notify_activity_change(config: dict, username: str, counting: bool,
 
 
 def main():
+    global _last_category, _last_trigger
     log.info("adam-control daemon starting")
 
     if os.geteuid() != 0:
         log.error("Must run as root")
         sys.exit(1)
+
+    _last_category, _last_trigger = _load_last_category()
+    log.info("Seeded activity category: %s", _last_category)
 
     import status_server
     port = status_server.start()
