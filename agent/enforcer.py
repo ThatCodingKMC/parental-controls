@@ -384,6 +384,41 @@ def _teardown_iptables():
             pass
 
 
+# ── Close proxy-bypass holes (IPv6 + QUIC) ────────────────────────────────────
+
+def _ensure_output_rule(cmd: str, rule: list):
+    """Idempotently append a rule to the filter OUTPUT chain."""
+    try:
+        present = subprocess.run([cmd, "-w", "-C", "OUTPUT", *rule],
+                                 capture_output=True, timeout=5).returncode == 0
+        if not present:
+            subprocess.run([cmd, "-w", "-A", "OUTPUT", *rule],
+                           capture_output=True, timeout=5)
+    except Exception as e:
+        log.debug("%s rule skipped (%s): %s", cmd, e, rule)
+
+
+def block_proxy_bypass():
+    """Force the user's web traffic through the IPv4/TCP transparent proxy.
+
+    The redirect only covers IPv4 TCP, leaving two holes that skip ALL
+    filtering and usage tracking:
+      * IPv6 — no redirect exists for it, and Chromium prefers it
+      * QUIC (UDP/443) — the redirect matches TCP only
+    Drop/reject both for non-root so browsers fall back to proxied IPv4 TCP.
+    Root is exempt, so mitmproxy's own upstream still works over v6/QUIC.
+    """
+    NONROOT = ["-m", "owner", "!", "--uid-owner", "0"]
+    # IPv4: kill QUIC so Chrome falls back to TCP (which we redirect)
+    _ensure_output_rule("iptables", ["-p", "udp", "--dport", "443", *NONROOT, "-j", "DROP"])
+    # IPv6: no redirect exists, so reject web + kill QUIC → forces IPv4 fallback
+    _ensure_output_rule("ip6tables", ["-p", "tcp", "--dport", "443", *NONROOT,
+                                      "-j", "REJECT", "--reject-with", "tcp-reset"])
+    _ensure_output_rule("ip6tables", ["-p", "tcp", "--dport", "80", *NONROOT,
+                                      "-j", "REJECT", "--reject-with", "tcp-reset"])
+    _ensure_output_rule("ip6tables", ["-p", "udp", "--dport", "443", *NONROOT, "-j", "DROP"])
+
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _get_uid(username: str) -> int:

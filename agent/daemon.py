@@ -547,6 +547,8 @@ def run_cycle(config: dict):
 
     # ── Enforce state ──
 
+    enforcer.block_proxy_bypass()   # keep IPv6/QUIC holes closed every cycle
+
     grant_active = grant_mod.active_grant()
     source = f"GRANT until {grant_active['until']}" if grant_active else config.get("mode_strategy", "schedule").upper()
     log.debug("mode=%s (%s) last=%s", mode, source, _last_mode)
@@ -673,6 +675,9 @@ def main():
 
     _last_category, _last_trigger = _load_last_category()
     log.info("Seeded activity category: %s", _last_category)
+
+    enforcer.block_proxy_bypass()   # close IPv6/QUIC holes so nothing skips the proxy
+    log.info("Closed proxy-bypass holes (IPv6 + QUIC)")
 
     import status_server
     port = status_server.start()
