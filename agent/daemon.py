@@ -74,20 +74,31 @@ def _config_dir() -> Path:
     return Path(CONFIG_PATH).parent
 
 
+def _clean_entries(text: str) -> list:
+    """Parse a domain/app list: drop blank lines and both full-line and
+    inline (`domain  # note`) comments, so a trailing comment can't get
+    glued onto a domain and silently break the match."""
+    out = []
+    for line in text.splitlines():
+        line = line.split("#", 1)[0].strip()
+        if line:
+            out.append(line)
+    return out
+
+
 def _load_domain_dir(subpath: str) -> list:
     d = _config_dir() / "lists" / subpath
     if not d.is_dir():
         return []
     domains = []
     for f in sorted(d.glob("*.txt")):
-        for line in f.read_text().splitlines():
-            line = line.strip()
-            if line and not line.startswith("#"):
-                domains.append(line)
+        domains.extend(_clean_entries(f.read_text()))
     return list(dict.fromkeys(domains))
 
 
 def _load_url_file(subpath: str) -> list:
+    # URL patterns are regexes (may legitimately contain '#'), so only
+    # full-line comments are stripped here, not inline.
     p = _config_dir() / "lists" / subpath / "urls.txt"
     if not p.exists():
         return []
@@ -99,16 +110,14 @@ def _load_allowed_file(subpath: str) -> list:
     p = _config_dir() / "lists" / subpath / "allowed.txt"
     if not p.exists():
         return []
-    return [l.strip() for l in p.read_text().splitlines()
-            if l.strip() and not l.strip().startswith("#")]
+    return _clean_entries(p.read_text())
 
 
 def _load_app_list(subpath: str) -> list:
     p = _config_dir() / "lists" / subpath / "blocked_apps.txt"
     if not p.exists():
         return []
-    return [l.strip() for l in p.read_text().splitlines()
-            if l.strip() and not l.strip().startswith("#")]
+    return _clean_entries(p.read_text())
 
 
 # ── Schedule helpers ──────────────────────────────────────────────────────────

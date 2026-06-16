@@ -32,7 +32,8 @@ drive.google.com
 classroom.google.com
 mail.google.com
 accounts.google.com
-google.com          # needed for search and auth redirects
+# google.com needed for search and auth redirects
+google.com
 
 # ── Microsoft (EFSC may use Microsoft 365) ───────────────────────────────────
 office.com
