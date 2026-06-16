@@ -51,10 +51,16 @@ zoomgov.com
 dictionary.com
 merriam-webster.com
 
-# ── Personal ──────────────────────────────────────────────────────────────────
-# His email — whitelisted so checking mail never burns free-time budget,
-# and stays reachable during work mode.
-proton.me
+# ── Always-allowed / never counts against budget ──────────────────────────────
+# Utilities & comms he can use anytime (work mode too); whitelisted so they
+# never burn free-time budget.
+proton.me            # email
+duckduckgo.com       # search
+discord.com          # chat
+discord.gg
+discordapp.com
+discordapp.net       # discord image/file CDN
+discord.media        # discord voice
 
 # ── Infrastructure / static assets ───────────────────────────────────────────
 # Helper domains that load *inside* the whitelisted sites above (fonts, scripts,

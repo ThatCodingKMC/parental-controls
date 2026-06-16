@@ -1,7 +1,5 @@
 # Apps killed during work mode.
 steam
-discord
-Discord
 roblox
 minecraft
 lutris

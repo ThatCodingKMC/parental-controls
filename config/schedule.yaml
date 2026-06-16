@@ -125,8 +125,6 @@ blocking:
     # Apps killed during work mode
     block_apps:
       - steam
-      - Discord
-      - discord
       - roblox
       - minecraft
       - lutris
@@ -160,9 +158,6 @@ app_limits:
     applies_in: [free]
   - app: roblox
     minutes: 60
-    applies_in: [free]
-  - app: discord
-    minutes: 120
     applies_in: [free]
 
 # ─── Notifications ───────────────────────────────────────────────────────────
