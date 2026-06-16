@@ -80,3 +80,19 @@ office.net
 officeapps.live.com
 sharepointonline.com
 live.com
+
+# ── More school / LMS tools (ride inside Canvas/EFSC) ─────────────────────────
+inscloudgate.net     # Instructure/Canvas infrastructure
+ciditools.com        # CIDI DesignPLUS — Canvas course tool
+ally.ac              # Anthology/Blackboard Ally accessibility in the LMS
+
+# ── Dev / learning / productivity tools ───────────────────────────────────────
+github.com           # code / programming
+debian.org           # Linux (this machine's OS) docs/packages
+raspberrypi.com      # Raspberry Pi docs/learning
+chatgpt.com          # AI assistant (see note to Dad: dual-use — can aid cheating)
+
+# ── Jobs / applications ───────────────────────────────────────────────────────
+acehardware.com      # job applications
+walmart.com          # job applications (note: also enables shopping)
+walmartimages.com    # walmart image CDN

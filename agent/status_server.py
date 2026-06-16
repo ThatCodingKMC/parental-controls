@@ -203,8 +203,8 @@ def _build_page() -> str:
         allowed_path = Path("/etc/adam-control/lists/work/allowed.txt")
         if allowed_path.exists():
             for line in allowed_path.read_text().splitlines():
-                line = line.strip()
-                if line and not line.startswith("#"):
+                line = line.split("#", 1)[0].strip()   # strip inline comments
+                if line:
                     work_whitelist.add(line)
     except Exception:
         pass
