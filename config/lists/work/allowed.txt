@@ -96,3 +96,12 @@ chatgpt.com          # AI assistant (see note to Dad: dual-use — can aid cheat
 acehardware.com      # job applications
 walmart.com          # job applications (note: also enables shopping)
 walmartimages.com    # walmart image CDN
+
+# ── Government / DMV ──────────────────────────────────────────────────────────
+flhsmv.gov           # Florida DMV — driver license / permit
+
+# ── Shared CDN (explicitly requested) ─────────────────────────────────────────
+# WARNING: cloudfront.net hosts a huge slice of the internet, so allowing it
+# also un-blocks/un-counts anything else served from CloudFront (some games
+# and entertainment included). Added because flhsmv.gov is served via it.
+cloudfront.net
