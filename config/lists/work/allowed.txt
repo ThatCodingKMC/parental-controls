@@ -101,7 +101,9 @@ walmartimages.com    # walmart image CDN
 flhsmv.gov           # Florida DMV — driver license / permit
 
 # ── Shared CDN (explicitly requested) ─────────────────────────────────────────
-# WARNING: cloudfront.net hosts a huge slice of the internet, so allowing it
-# also un-blocks/un-counts anything else served from CloudFront (some games
-# and entertainment included). Added because flhsmv.gov is served via it.
+# Needed for school / Webcourses (and flhsmv.gov) — their assets are served
+# via CloudFront. WARNING: cloudfront.net hosts a huge slice of the internet,
+# so allowing it also un-blocks/un-counts anything else served from CloudFront
+# (some games and entertainment included). Revisit to a specific distribution
+# if games start slipping through.
 cloudfront.net
