@@ -6,8 +6,10 @@
 easternflorida.edu
 # Canvas LMS (add whichever subdomain they use)
 instructure.com
+canvaslms.com        # Canvas LMS
 efsc.instructure.com
 canvas.easternflorida.edu
+vhlcentral.com       # Vista Higher Learning — language courses
 # Student portal / Brightspace if used
 brightspace.com
 
