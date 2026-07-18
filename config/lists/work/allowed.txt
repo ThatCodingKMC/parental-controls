@@ -10,6 +10,8 @@ canvaslms.com        # Canvas LMS
 efsc.instructure.com
 canvas.easternflorida.edu
 vhlcentral.com       # Vista Higher Learning — language courses
+vistahigherlearning.com  # VHL main site
+braintreegateway.com     # payment processor used by VHL
 # Student portal / Brightspace if used
 brightspace.com
 
@@ -109,3 +111,4 @@ flhsmv.gov           # Florida DMV — driver license / permit
 # (some games and entertainment included). Revisit to a specific distribution
 # if games start slipping through.
 cloudfront.net
+cloudflare.com       # Cloudflare challenge/turnstile — gates many school sites
