@@ -36,6 +36,7 @@ drive.google.com
 classroom.google.com
 mail.google.com
 accounts.google.com
+forms.gle            # Google Forms short links
 # google.com needed for search and auth redirects
 google.com
 
@@ -50,6 +51,8 @@ outlook.com
 # ── Video conferencing (FLVS uses Zoom for live classes) ─────────────────────
 zoom.us
 zoomgov.com
+zoom.com             # Zoom's newer primary domain
+zipow.com            # Zoom web-client assets/infra (browser client loads from here)
 
 # ── Reference ─────────────────────────────────────────────────────────────────
 dictionary.com
