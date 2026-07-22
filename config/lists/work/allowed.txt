@@ -97,6 +97,7 @@ ally.ac              # Anthology/Blackboard Ally accessibility in the LMS
 github.com           # code / programming
 debian.org           # Linux (this machine's OS) docs/packages
 raspberrypi.com      # Raspberry Pi docs/learning
+123apps.com          # browser audio/video editing tools
 chatgpt.com          # AI assistant (see note to Dad: dual-use — can aid cheating)
 
 # ── Jobs / applications ───────────────────────────────────────────────────────
