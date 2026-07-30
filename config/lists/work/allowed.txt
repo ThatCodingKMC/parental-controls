@@ -31,7 +31,6 @@ flvsgl.com
 khanacademy.org
 wikipedia.org
 duolingo.com
-scratch.mit.edu
 quizlet.com
 desmos.com
 wolframalpha.com

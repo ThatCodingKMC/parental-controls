@@ -1,2 +1,3 @@
 # Distraction / off-limits sites — blocked 24/7 in every mode.
 petalstudy.com
+scratch.mit.edu      # Scratch website (offline app is killed via blocked_apps)

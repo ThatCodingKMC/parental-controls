@@ -5,3 +5,7 @@
 # expressvpn
 # nordvpn
 # protonvpn
+
+# Scratch offline editor — killed 24/7 so he can't keep programming offline.
+# (Domain block below only stops the website; this stops the desktop app.)
+scratch

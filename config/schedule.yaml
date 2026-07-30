@@ -99,7 +99,6 @@ blocking:
       - khanacademy.org
       - wikipedia.org
       - duolingo.com
-      - scratch.mit.edu
       - quizlet.com
       - desmos.com
       - wolframalpha.com
@@ -135,12 +134,6 @@ blocking:
 # A "site" can be an exact domain (youtube.com) or a suffix group (*.io),
 # which aggregates wall-clock minutes across every host sharing that suffix.
 site_limits:
-  # Scratch programming (whitelisted as school, so it never burns free budget —
-  # this caps it anyway). Proxy records by root domain, so "mit.edu" is the
-  # key that actually matches scratch.mit.edu traffic.
-  - site: mit.edu
-    minutes: 60
-    applies_in: [free, work]
   - site: youtube.com
     minutes: 120
     applies_in: [free]
