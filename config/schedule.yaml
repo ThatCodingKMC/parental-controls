@@ -55,8 +55,8 @@ schedule:
 # Change start to e.g. "17:00" to force work mode before then.
 budget:
   free_minutes:
-    weekday: 180
-    weekend: 180
+    weekday: 30
+    weekend: 30
   available_hours:
     start: "00:00"
     end:   "23:59"
