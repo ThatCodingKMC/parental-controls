@@ -94,6 +94,7 @@ office.net
 officeapps.live.com
 sharepointonline.com
 live.com
+typekit.net          # Adobe Fonts CDN — loads fonts inside many sites
 
 # ── More school / LMS tools (ride inside Canvas/EFSC) ─────────────────────────
 inscloudgate.net     # Instructure/Canvas infrastructure
@@ -107,6 +108,7 @@ raspberrypi.com      # Raspberry Pi docs/learning
 123apps.com          # browser audio/video editing tools
 online-voice-recorder.com   # 123apps voice recorder (separate domain)
 chatgpt.com          # AI assistant (see note to Dad: dual-use — can aid cheating)
+grok.com             # xAI Grok — AI assistant (dual-use, same as chatgpt)
 
 # ── Jobs / applications ───────────────────────────────────────────────────────
 acehardware.com      # job applications
