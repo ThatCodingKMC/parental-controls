@@ -98,7 +98,9 @@ class AdamControl:
     @staticmethod
     def _domain_matches(host: str, pattern: str) -> bool:
         host = host.lower().split(":")[0]
-        pattern = pattern.lower().lstrip("www.")
+        pattern = pattern.lower()
+        if pattern.startswith("www."):   # strip the www. PREFIX (not lstrip, which
+            pattern = pattern[4:]        # eats leading w/. chars — breaks wiris.net etc.)
         root = AdamControl._root_domain(host)
         return root == pattern or host == pattern or host.endswith("." + pattern)
 

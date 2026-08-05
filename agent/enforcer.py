@@ -266,7 +266,9 @@ def _write_hosts_block(domains: List[str]):
         new_lines.append(HOSTS_MARKER_START)
         seen = set()
         for domain in domains:
-            domain = domain.strip().lstrip("www.")
+            domain = domain.strip()
+            if domain.startswith("www."):   # prefix strip, not lstrip (which
+                domain = domain[4:]         # would eat leading w/. chars)
             if domain in seen:
                 continue
             seen.add(domain)

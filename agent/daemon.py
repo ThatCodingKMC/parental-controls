@@ -291,10 +291,16 @@ def write_proxy_rules(rules: dict):
 # "Free activity" = a request to a work-blocked site, OR a known free app running.
 # Work-only activity (Khan Academy, etc.) does NOT tick the budget.
 
+def _strip_www(s: str) -> str:
+    """Strip a leading 'www.' PREFIX. (str.lstrip('www.') is wrong — it removes
+    any leading w/. characters, so 'wiris.net' -> 'iris.net' and the match fails.)"""
+    return s[4:] if s.startswith("www.") else s
+
+
 def _domain_matches(domain: str, pattern: str) -> bool:
     """True if domain equals or is a subdomain of pattern (both www-stripped)."""
-    domain  = domain.lower().lstrip("www.")
-    pattern = pattern.lower().lstrip("www.")
+    domain  = _strip_www(domain.lower())
+    pattern = _strip_www(pattern.lower())
     return domain == pattern or domain.endswith("." + pattern)
 
 

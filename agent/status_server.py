@@ -223,10 +223,13 @@ def _build_page() -> str:
             return True
         return any(hint in d for hint in _EDU_HINTS)
 
+    def _strip_www(s):
+        return s[4:] if s.startswith("www.") else s
+
     def _in_whitelist(domain: str) -> bool:
-        domain = domain.lower().lstrip("www.")
+        domain = _strip_www(domain.lower())
         for w in work_whitelist:
-            w = w.lower().lstrip("www.")
+            w = _strip_www(w.lower())
             if domain == w or domain.endswith("." + w):
                 return True
         return False
