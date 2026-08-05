@@ -92,6 +92,8 @@ typekit.net          # Adobe Fonts CDN — loads fonts inside many sites
 inscloudgate.net     # Instructure/Canvas infrastructure
 ciditools.com        # CIDI DesignPLUS — Canvas course tool
 ally.ac              # Anthology/Blackboard Ally accessibility in the LMS
+wiris.net            # WIRIS/MathType equation editor (the coursework text box)
+botframework.com     # embedded chatbot widget in coursework
 
 # ── Dev / learning / productivity tools ───────────────────────────────────────
 github.com           # code / programming
