@@ -57,9 +57,13 @@ budget:
   free_minutes:
     weekday: 30
     weekend: 30
+  # FREE TIME DISABLED (0 free time): this impossible window means free time is
+  # never available, so he is always in work mode (school whitelist only).
+  # NOTE: setting free_minutes to 0 does NOT work — the code reads 0 as
+  # "unlimited". To re-enable free time, restore start/end to "00:00"/"23:59".
   available_hours:
     start: "00:00"
-    end:   "23:59"
+    end:   "00:00"
 
 # ─── Blocking ────────────────────────────────────────────────────────────────
 # Two tiers only:
@@ -134,9 +138,6 @@ blocking:
 # A "site" can be an exact domain (youtube.com) or a suffix group (*.io),
 # which aggregates wall-clock minutes across every host sharing that suffix.
 site_limits:
-  - site: youtube.com
-    minutes: 120
-    applies_in: [free]
   - site: twitch.tv
     minutes: 30
     applies_in: [free]

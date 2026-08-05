@@ -2,3 +2,6 @@
 petalstudy.com
 scratch.mit.edu      # Scratch website (offline app is killed via blocked_apps)
 zorr.pro
+youtube.com
+googlevideo.com      # YouTube video stream backend
+youtu.be             # YouTube short links

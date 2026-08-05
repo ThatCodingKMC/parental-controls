@@ -2,14 +2,6 @@
 # If this file has any entries, ONLY these domains are allowed during work windows.
 # Delete all entries (or leave only comments) to switch to blacklist-only mode.
 
-# ⚠️ TEMPORARY — REVERT THIS ⚠️ ───────────────────────────────────────────────
-# Added so embedded YouTube French videos play inside his coursework.
-# Side effect: YouTube no longer counts against free budget and is uncapped in
-# work mode. Remove these two lines (and this block) to restore normal blocking.
-youtube.com
-googlevideo.com      # YouTube video stream backend (needed for playback)
-# ──────────────────────────────────────────────────────────────────────────────
-
 # ── Eastern Florida State College (EFSC) ─────────────────────────────────────
 easternflorida.edu
 # Canvas LMS (add whichever subdomain they use)
