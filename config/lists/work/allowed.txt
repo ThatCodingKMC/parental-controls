@@ -96,6 +96,7 @@ ciditools.com        # CIDI DesignPLUS — Canvas course tool
 ally.ac              # Anthology/Blackboard Ally accessibility in the LMS
 wiris.net            # WIRIS/MathType equation editor (the coursework text box)
 botframework.com     # embedded chatbot widget in coursework
+canvas-user-content.com  # Canvas-hosted user files/attachments
 
 # ── Dev / learning / productivity tools ───────────────────────────────────────
 github.com           # code / programming
