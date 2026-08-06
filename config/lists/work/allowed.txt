@@ -12,6 +12,7 @@ canvas.easternflorida.edu
 vhlcentral.com       # Vista Higher Learning — language courses
 vistahigherlearning.com  # VHL main site
 braintreegateway.com     # payment processor used by VHL
+campuscommerce.com       # campus payment/commerce portal (SAML SSO) — whole domain
 # Student portal / Brightspace if used
 brightspace.com
 
