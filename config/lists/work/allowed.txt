@@ -20,6 +20,7 @@ brightspace.com
 # ── Florida Virtual School (FLVS) ────────────────────────────────────────────
 flvs.net
 flvsgl.com
+flvc.org             # Florida Virtual Campus — library catalog (Primo/Alma)
 
 # ── General school / educational ─────────────────────────────────────────────
 khanacademy.org
