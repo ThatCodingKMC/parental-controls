@@ -55,15 +55,11 @@ schedule:
 # Change start to e.g. "17:00" to force work mode before then.
 budget:
   free_minutes:
-    weekday: 30
-    weekend: 30
-  # FREE TIME DISABLED (0 free time): this impossible window means free time is
-  # never available, so he is always in work mode (school whitelist only).
-  # NOTE: setting free_minutes to 0 does NOT work — the code reads 0 as
-  # "unlimited". To re-enable free time, restore start/end to "00:00"/"23:59".
+    weekday: 180
+    weekend: 180
   available_hours:
     start: "00:00"
-    end:   "00:00"
+    end:   "23:59"
 
 # ─── Blocking ────────────────────────────────────────────────────────────────
 # Two tiers only:
