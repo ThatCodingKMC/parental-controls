@@ -100,6 +100,7 @@ botframework.com     # embedded chatbot widget in coursework
 canvas-user-content.com  # Canvas-hosted user files/attachments
 ocelotbot.com        # Ocelot — college student-services AI chatbot
 pendo.io             # in-app guides/analytics that ride inside Canvas
+pearsoned.com        # Pearson Education — textbooks / MyLab / Mastering courseware
 
 # ── Dev / learning / productivity tools ───────────────────────────────────────
 github.com           # code / programming
