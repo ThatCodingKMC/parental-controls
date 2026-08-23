@@ -2,8 +2,9 @@
 # If this file has any entries, ONLY these domains are allowed during work windows.
 # Delete all entries (or leave only comments) to switch to blacklist-only mode.
 
-# ── Eastern Florida State College (EFSC) ─────────────────────────────────────
+# ── Colleges ─────────────────────────────────────────────────────────────────
 easternflorida.edu
+ucf.edu              # University of Central Florida
 # Canvas LMS (add whichever subdomain they use)
 instructure.com
 canvaslms.com        # Canvas LMS
