@@ -102,6 +102,11 @@ canvas-user-content.com  # Canvas-hosted user files/attachments
 ocelotbot.com        # Ocelot — college student-services AI chatbot
 pendo.io             # in-app guides/analytics that ride inside Canvas
 pearsoned.com        # Pearson Education — textbooks / MyLab / Mastering courseware
+pearson.com          # Pearson main site
+learnosity.com       # assessment/quiz engine embedded in courseware
+honorlock.com        # online exam proctoring
+livechatinc.com      # support chat widget on coursework sites
+ytimg.com            # YouTube thumbnail CDN (harmless; no video without youtube.com)
 
 # ── Dev / learning / productivity tools ───────────────────────────────────────
 github.com           # code / programming
