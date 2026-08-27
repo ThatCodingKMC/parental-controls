@@ -5,6 +5,8 @@
 # ── Colleges ─────────────────────────────────────────────────────────────────
 easternflorida.edu
 ucf.edu              # University of Central Florida
+purdue.edu           # Purdue (owl.purdue.edu — writing/citation lab)
+focusschoolsoftware.com  # Focus — school information system (grades/schedule)
 # Canvas LMS (add whichever subdomain they use)
 instructure.com
 canvaslms.com        # Canvas LMS
