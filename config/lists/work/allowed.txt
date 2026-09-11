@@ -113,6 +113,7 @@ livechatinc.com      # support chat widget on coursework sites
 ytimg.com            # YouTube thumbnail CDN (harmless; no video without youtube.com)
 bncollege.com        # Barnes & Noble College bookstore / e-text LTI
 vitalsource.com      # VitalSource e-textbook platform
+vitalbook.com        # VitalSource e-book content delivery
 yuzu.com             # B&N Yuzu e-textbook reader
 edu-apps.org         # LTI app registry (Canvas integrations)
 securiti.ai          # cookie/consent widget that rides in bookstore sites
