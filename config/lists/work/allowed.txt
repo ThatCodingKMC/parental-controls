@@ -52,6 +52,7 @@ microsoftonline.com
 sharepoint.com
 teams.microsoft.com
 outlook.com
+cloud.microsoft      # Microsoft 365 consolidated services domain
 
 # ── Video conferencing (FLVS uses Zoom for live classes) ─────────────────────
 zoom.us
@@ -110,6 +111,11 @@ learnosity.com       # assessment/quiz engine embedded in courseware
 honorlock.com        # online exam proctoring
 livechatinc.com      # support chat widget on coursework sites
 ytimg.com            # YouTube thumbnail CDN (harmless; no video without youtube.com)
+bncollege.com        # Barnes & Noble College bookstore / e-text LTI
+vitalsource.com      # VitalSource e-textbook platform
+yuzu.com             # B&N Yuzu e-textbook reader
+edu-apps.org         # LTI app registry (Canvas integrations)
+securiti.ai          # cookie/consent widget that rides in bookstore sites
 
 # ── Dev / learning / productivity tools ───────────────────────────────────────
 github.com           # code / programming
@@ -136,3 +142,6 @@ flhsmv.gov           # Florida DMV — driver license / permit
 # if games start slipping through.
 cloudfront.net
 cloudflare.com       # Cloudflare challenge/turnstile — gates many school sites
+amazonaws.com        # AWS — serves e-textbook content. WARNING: broadest CDN of
+                     # all; also un-blocks anything else hosted on AWS. Watch for
+                     # games slipping through; scope to specific buckets if so.
