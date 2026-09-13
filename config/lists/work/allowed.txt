@@ -15,6 +15,10 @@ canvas.easternflorida.edu
 vhlcentral.com       # Vista Higher Learning — language courses
 vistahigherlearning.com  # VHL main site
 braintreegateway.com     # payment processor used by VHL
+stripe.com               # Stripe payments
+stripeassets.com         # Stripe assets
+stripecdn.com            # Stripe CDN
+stripe.network           # Stripe network
 campuscommerce.com       # campus payment/commerce portal (SAML SSO) — whole domain
 nelnet.net               # Nelnet — campus payments/financial aid (runs campuscommerce)
 # Student portal / Brightspace if used
@@ -84,6 +88,7 @@ discord.media        # discord voice
 gstatic.com
 googleapis.com
 unpkg.com            # JS library CDN used by coursework tools (serves code, not pages)
+ggpht.com            # Google static content / avatars (helper; no video)
 googleusercontent.com
 gvt1.com
 gvt2.com
@@ -126,11 +131,23 @@ raspberrypi.com      # Raspberry Pi docs/learning
 online-voice-recorder.com   # 123apps voice recorder (separate domain)
 chatgpt.com          # AI assistant (see note to Dad: dual-use — can aid cheating)
 grok.com             # xAI Grok — AI assistant (dual-use, same as chatgpt)
+wordcounter.net      # word/character counter for essays
 
 # ── Jobs / applications ───────────────────────────────────────────────────────
 acehardware.com      # job applications
 walmart.com          # job applications (note: also enables shopping)
 walmartimages.com    # walmart image CDN
+# ── Common job-search sites ──
+indeed.com
+ziprecruiter.com
+snagajob.com         # hourly / entry-level (student-friendly)
+glassdoor.com
+monster.com
+careerbuilder.com
+simplyhired.com
+joinhandshake.com    # Handshake — college student jobs
+usajobs.gov          # federal jobs
+linkedin.com         # jobs + networking (note: also has a social feed — dual-use)
 
 # ── Government / DMV ──────────────────────────────────────────────────────────
 flhsmv.gov           # Florida DMV — driver license / permit
