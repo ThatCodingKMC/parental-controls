@@ -148,6 +148,8 @@ simplyhired.com
 joinhandshake.com    # Handshake — college student jobs
 usajobs.gov          # federal jobs
 linkedin.com         # jobs + networking (note: also has a social feed — dual-use)
+paylocity.com        # Paylocity — recruiting/ATS used by many employers
+tjx.com              # TJX careers (TJ Maxx / Marshalls / HomeGoods)
 
 # ── Government / DMV ──────────────────────────────────────────────────────────
 flhsmv.gov           # Florida DMV — driver license / permit
