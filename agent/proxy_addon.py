@@ -20,9 +20,10 @@ from pathlib import Path
 from mitmproxy import http
 from mitmproxy.net.check import is_valid_host
 
-RULES_FILE  = "/var/lib/adam-control/proxy_rules.json"
-USAGE_FILE  = "/var/lib/adam-control/site_usage.json"
-RELOAD_SECS = 5   # re-read rules file at most every N seconds
+RULES_FILE   = "/var/lib/adam-control/proxy_rules.json"
+USAGE_FILE   = "/var/lib/adam-control/site_usage.json"
+BLOCKED_FILE = "/var/lib/adam-control/blocked_recent.json"  # what got blocked (debug)
+RELOAD_SECS  = 5   # re-read rules file at most every N seconds
 
 BLOCK_HTML = """\
 <!DOCTYPE html>
@@ -70,6 +71,26 @@ class AdamControl:
         self._rules: dict = {}
         self._rules_mtime: float = 0.0
         self._last_reload: float = 0.0
+        self._blocked: dict = {}          # root_domain -> {count,last,reason,sample}
+        self._blocked_write: float = 0.0  # throttle writes to BLOCKED_FILE
+
+    # ── Block logging (debug: what's getting blocked) ─────────────────────────
+
+    def _log_block(self, host: str, url: str, reason: str):
+        root = self._root_domain(host)
+        now = time.time()
+        e = self._blocked.get(root, {"count": 0})
+        e.update(count=e["count"] + 1, last=now, reason=reason, sample=url[:200])
+        self._blocked[root] = e
+        if len(self._blocked) > 100:                     # keep the map bounded
+            oldest = min(self._blocked, key=lambda k: self._blocked[k]["last"])
+            del self._blocked[oldest]
+        if now - self._blocked_write >= 5:               # write at most every 5s
+            self._blocked_write = now
+            try:
+                Path(BLOCKED_FILE).write_text(json.dumps(self._blocked, default=str))
+            except Exception:
+                pass
 
     # ── Rule loading ─────────────────────────────────────────────────────────
 
@@ -231,6 +252,7 @@ class AdamControl:
 
         blocked, reason, message = self._check(host, url)
         if blocked:
+            self._log_block(host, url, reason)
             flow.response = http.Response.make(
                 403,
                 BLOCK_HTML.format(reason=reason, message=message or "Come find Dad if you need access."),

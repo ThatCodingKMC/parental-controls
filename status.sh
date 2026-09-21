@@ -4,6 +4,7 @@
 # Usage:
 #   ./status.sh          — show full status dashboard (terminal)
 #   ./status.sh web      — open the ranked web dashboard in your browser
+#   ./status.sh blocked  — show domains recently blocked by the proxy
 #   ./status.sh logs     — tail live daemon logs
 #   ./status.sh proxy    — tail live proxy logs
 
@@ -23,6 +24,21 @@ case "$CMD" in
     ( sleep 2; xdg-open http://localhost:8765 >/dev/null 2>&1 || \
         echo "→ open http://localhost:8765 in your browser" ) &
     ssh -L 8765:localhost:8765 "$TARGET"
+    ;;
+  blocked)
+    ssh "$TARGET" "sudo python3 -c '
+import json
+try:
+    d=json.load(open(\"/var/lib/adam-control/blocked_recent.json\"))
+except Exception:
+    print(\"(nothing recorded yet)\"); raise SystemExit
+import datetime as dt
+rows=sorted(d.items(), key=lambda kv: kv[1].get(\"last\",0), reverse=True)
+print(\"%-34s %6s  %-20s %s\" % (\"DOMAIN\",\"HITS\",\"WHEN\",\"REASON\"))
+for host,e in rows:
+    when=dt.datetime.fromtimestamp(float(e.get(\"last\",0))).strftime(\"%H:%M:%S\")
+    print(\"%-34s %6s  %-20s %s\" % (host, e.get(\"count\",0), when, e.get(\"reason\",\"\")))
+'"
     ;;
   logs)
     ssh "$TARGET" "sudo journalctl -u adam-control -f"

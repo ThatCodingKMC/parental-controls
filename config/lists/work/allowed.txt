@@ -121,6 +121,7 @@ vitalsource.com      # VitalSource e-textbook platform
 vitalbook.com        # VitalSource e-book content delivery
 yuzu.com             # B&N Yuzu e-textbook reader
 edu-apps.org         # LTI app registry (Canvas integrations)
+insops.net           # Instructure Canvas ops / error reporting (Sentry)
 securiti.ai          # cookie/consent widget that rides in bookstore sites
 
 # ── Dev / learning / productivity tools ───────────────────────────────────────
@@ -150,6 +151,8 @@ usajobs.gov          # federal jobs
 linkedin.com         # jobs + networking (note: also has a social feed — dual-use)
 paylocity.com        # Paylocity — recruiting/ATS used by many employers
 tjx.com              # TJX careers (TJ Maxx / Marshalls / HomeGoods)
+appone.com           # AppOne applicant tracking / job applications
+mapquest.com         # maps/directions (job/interview locations)
 
 # ── Government / DMV ──────────────────────────────────────────────────────────
 flhsmv.gov           # Florida DMV — driver license / permit
