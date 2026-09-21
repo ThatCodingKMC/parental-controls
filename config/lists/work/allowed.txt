@@ -122,6 +122,7 @@ vitalbook.com        # VitalSource e-book content delivery
 yuzu.com             # B&N Yuzu e-textbook reader
 edu-apps.org         # LTI app registry (Canvas integrations)
 insops.net           # Instructure Canvas ops / error reporting (Sentry)
+simplesyllabus.com   # Simple Syllabus — Canvas syllabus viewer (LTI)
 securiti.ai          # cookie/consent widget that rides in bookstore sites
 
 # ── Dev / learning / productivity tools ───────────────────────────────────────
