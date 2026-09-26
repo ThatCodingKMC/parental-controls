@@ -36,6 +36,7 @@ khanacademy.org
 libretexts.org       # LibreTexts — open textbooks (all subject subdomains)
 mla.org              # MLA style / citation (style.mla.org)
 libguides.com        # LibGuides — library research guides
+parchment.com        # Parchment — official transcripts / credentials
 springyaws.com       # Springshare/LibGuides asset host
 tfaforms.com         # FormAssembly — forms used by schools
 wikipedia.org
