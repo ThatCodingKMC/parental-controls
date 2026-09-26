@@ -6,6 +6,8 @@
 easternflorida.edu
 ucf.edu              # University of Central Florida
 purdue.edu           # Purdue (owl.purdue.edu — writing/citation lab)
+princeton.edu        # Princeton University
+ac.uk                # UK academic institutions (the UK's .edu)
 focusschoolsoftware.com  # Focus — school information system (grades/schedule)
 # Canvas LMS (add whichever subdomain they use)
 instructure.com
@@ -31,6 +33,11 @@ flvc.org             # Florida Virtual Campus — library catalog (Primo/Alma)
 
 # ── General school / educational ─────────────────────────────────────────────
 khanacademy.org
+libretexts.org       # LibreTexts — open textbooks (all subject subdomains)
+mla.org              # MLA style / citation (style.mla.org)
+libguides.com        # LibGuides — library research guides
+springyaws.com       # Springshare/LibGuides asset host
+tfaforms.com         # FormAssembly — forms used by schools
 wikipedia.org
 duolingo.com
 quizlet.com
@@ -89,6 +96,11 @@ gstatic.com
 googleapis.com
 unpkg.com            # JS library CDN used by coursework tools (serves code, not pages)
 ggpht.com            # Google static content / avatars (helper; no video)
+jsdelivr.net         # JS library CDN (serves code, not pages)
+jquery.com           # jQuery library CDN
+bootstrapcdn.com     # Bootstrap CSS/JS framework CDN
+fontawesome.com      # icon font CDN
+typekit.com          # Adobe Fonts (companion to typekit.net)
 googleusercontent.com
 gvt1.com
 gvt2.com
@@ -120,6 +132,7 @@ bncollege.com        # Barnes & Noble College bookstore / e-text LTI
 vitalsource.com      # VitalSource e-textbook platform
 vitalbook.com        # VitalSource e-book content delivery
 yuzu.com             # B&N Yuzu e-textbook reader
+verbacompete.com     # Verba — course-materials/bookstore platform
 edu-apps.org         # LTI app registry (Canvas integrations)
 insops.net           # Instructure Canvas ops / error reporting (Sentry)
 simplesyllabus.com   # Simple Syllabus — Canvas syllabus viewer (LTI)
@@ -134,6 +147,7 @@ online-voice-recorder.com   # 123apps voice recorder (separate domain)
 chatgpt.com          # AI assistant (see note to Dad: dual-use — can aid cheating)
 grok.com             # xAI Grok — AI assistant (dual-use, same as chatgpt)
 wordcounter.net      # word/character counter for essays
+canva.com            # Canva — design tool for projects (dual-use)
 
 # ── Jobs / applications ───────────────────────────────────────────────────────
 acehardware.com      # job applications
