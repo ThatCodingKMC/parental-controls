@@ -102,6 +102,11 @@ jquery.com           # jQuery library CDN
 bootstrapcdn.com     # Bootstrap CSS/JS framework CDN
 fontawesome.com      # icon font CDN
 typekit.com          # Adobe Fonts (companion to typekit.net)
+onetrust.com         # cookie-consent banner widget
+cookielaw.org        # OneTrust cookie-consent domain
+zendesk.com          # support/help-desk widget
+zdassets.com         # Zendesk widget assets
+ipstack.com          # IP geolocation API (rides in sites)
 googleusercontent.com
 gvt1.com
 gvt2.com
