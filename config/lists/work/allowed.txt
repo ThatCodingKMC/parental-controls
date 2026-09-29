@@ -21,6 +21,9 @@ stripe.com               # Stripe payments
 stripeassets.com         # Stripe assets
 stripecdn.com            # Stripe CDN
 stripe.network           # Stripe network
+paypal.com               # PayPal payments
+braintree-api.com        # Braintree (PayPal) payment API
+recurly.com              # Recurly subscription billing
 campuscommerce.com       # campus payment/commerce portal (SAML SSO) — whole domain
 nelnet.net               # Nelnet — campus payments/financial aid (runs campuscommerce)
 # Student portal / Brightspace if used
@@ -35,6 +38,8 @@ flvc.org             # Florida Virtual Campus — library catalog (Primo/Alma)
 khanacademy.org
 libretexts.org       # LibreTexts — open textbooks (all subject subdomains)
 mla.org              # MLA style / citation (style.mla.org)
+easybib.com          # EasyBib — citation generator
+exlibrisgroup.com    # Ex Libris Primo/Alma — library catalog (efsc-flvc)
 libguides.com        # LibGuides — library research guides
 parchment.com        # Parchment — official transcripts / credentials
 springyaws.com       # Springshare/LibGuides asset host
@@ -107,6 +112,14 @@ cookielaw.org        # OneTrust cookie-consent domain
 zendesk.com          # support/help-desk widget
 zdassets.com         # Zendesk widget assets
 ipstack.com          # IP geolocation API (rides in sites)
+b2clogin.com         # Microsoft Azure AD B2C login/SSO
+auth0.com            # Auth0 login/SSO
+kaptcha.com          # captcha widget (login flows)
+px-client.net        # PerimeterX/HUMAN bot detection
+px-cloud.net         # PerimeterX/HUMAN bot detection
+pusher.com           # Pusher realtime/websocket infrastructure
+adobedtm.com         # Adobe tag manager (analytics loader)
+posthog.com          # PostHog analytics (rides in apps)
 googleusercontent.com
 gvt1.com
 gvt2.com
