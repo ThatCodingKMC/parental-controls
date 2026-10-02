@@ -37,6 +37,12 @@ flvc.org             # Florida Virtual Campus — library catalog (Primo/Alma)
 # ── General school / educational ─────────────────────────────────────────────
 khanacademy.org
 libretexts.org       # LibreTexts — open textbooks (all subject subdomains)
+myopenmath.com       # MyOpenMath — online math homework/assessment
+smarthistory.org     # Smarthistory — art history (Khan partner)
+metmuseum.org        # The Met — art museum / art history
+ebsco.com            # EBSCO — academic research databases
+literatureandhistory.com  # literature & history educational site
+hypothes.is          # Hypothesis — web annotation (Canvas tool)
 mla.org              # MLA style / citation (style.mla.org)
 easybib.com          # EasyBib — citation generator
 exlibrisgroup.com    # Ex Libris Primo/Alma — library catalog (efsc-flvc)
@@ -120,6 +126,8 @@ px-cloud.net         # PerimeterX/HUMAN bot detection
 pusher.com           # Pusher realtime/websocket infrastructure
 adobedtm.com         # Adobe tag manager (analytics loader)
 posthog.com          # PostHog analytics (rides in apps)
+donorbox.org         # donation widget on edu-nonprofit sites
+mtstatic.com         # static-asset CDN (rides in coursework tools)
 googleusercontent.com
 gvt1.com
 gvt2.com
@@ -168,6 +176,10 @@ chatgpt.com          # AI assistant (see note to Dad: dual-use — can aid cheat
 grok.com             # xAI Grok — AI assistant (dual-use, same as chatgpt)
 wordcounter.net      # word/character counter for essays
 canva.com            # Canva — design tool for projects (dual-use)
+webspellchecker.net  # spell-check in coursework text editors
+online-stopwatch.com # timer/stopwatch (study/exam timing)
+guidde.com           # how-to / documentation tool
+vanillacommunities.com   # Vanilla forum platform (course community)
 
 # ── Jobs / applications ───────────────────────────────────────────────────────
 acehardware.com      # job applications
