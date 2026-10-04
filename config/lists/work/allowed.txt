@@ -178,6 +178,7 @@ grok-sandbox.com     # Grok code/app sandbox (runs generated interactive content
 wordcounter.net      # word/character counter for essays
 canva.com            # Canva — design tool for projects (dual-use)
 webspellchecker.net  # spell-check in coursework text editors
+naturalreaders.com   # NaturalReaders — text-to-speech reader (study/accessibility)
 online-stopwatch.com # timer/stopwatch (study/exam timing)
 guidde.com           # how-to / documentation tool
 vanillacommunities.com   # Vanilla forum platform (course community)
