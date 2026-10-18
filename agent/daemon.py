@@ -176,11 +176,11 @@ def _is_on_hours(config: dict) -> bool:
 
 
 def _discord_allowed_now() -> bool:
-    """Discord is permitted only during: the last 5 minutes of any hour
-    (xx:55–xx:59), after 10pm (hour >= 22), or before 9am (hour < 9).
-    Outside these windows the Discord domains are blocked."""
+    """Discord is permitted only during: the last 5 minutes of each half hour
+    (xx:25–xx:29 and xx:55–xx:59), after 10pm (hour >= 22), or before 9am
+    (hour < 9). Outside these windows the Discord domains are blocked."""
     now = datetime.now()
-    return now.minute >= 55 or now.hour >= 22 or now.hour < 9
+    return now.minute % 30 >= 25 or now.hour >= 22 or now.hour < 9
 
 
 def _schedule_mode(config: dict) -> str:
