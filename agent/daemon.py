@@ -272,7 +272,11 @@ def build_proxy_rules(config: dict, mode: str, username: str) -> dict:
 
     # Discord: blocked except during its allowed windows. block_domains is
     # checked after the whitelist in the proxy, so this overrides allowed.txt.
-    if not _discord_allowed_now():
+    # An active FREE grant also opens Discord (full free time == Discord too),
+    # so it re-restricts automatically when the grant expires.
+    _grant = grant_mod.active_grant()
+    discord_open = _discord_allowed_now() or bool(_grant and _grant.get("mode") == "free")
+    if not discord_open:
         block_domains += DISCORD_DOMAINS
 
     # URL patterns: always-on, plus work-specific if in work mode
