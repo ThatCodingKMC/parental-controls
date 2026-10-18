@@ -171,6 +171,7 @@ securiti.ai          # cookie/consent widget that rides in bookstore sites
 
 # ── Dev / learning / productivity tools ───────────────────────────────────────
 github.com           # code / programming
+github.io            # GitHub Pages (exception to the .io ban — see block_exceptions.txt)
 debian.org           # Linux (this machine's OS) docs/packages
 raspberrypi.com      # Raspberry Pi docs/learning
 123apps.com          # browser audio/video editing tools

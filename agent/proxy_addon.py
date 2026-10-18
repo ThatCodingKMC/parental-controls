@@ -145,10 +145,16 @@ class AdamControl:
             if not any(self._domain_matches(host, a) for a in allow):
                 return True, "Not in allowed list", "Only school sites are allowed right now."
 
+        # Exceptions carve holes in broad suffix bans (e.g. the ".io" block):
+        # a host matching an exception is never blocked by block_domains.
+        exceptions = r.get("block_exceptions", [])
+        is_exception = any(self._domain_matches(host, e) for e in exceptions)
+
         # Always-blocked domains (same in both modes)
-        for d in r.get("block_domains", []):
-            if self._domain_matches(host, d):
-                return True, d, "This site is blocked right now."
+        if not is_exception:
+            for d in r.get("block_domains", []):
+                if self._domain_matches(host, d):
+                    return True, d, "This site is blocked right now."
 
         # URL patterns (always-on + work-specific, merged by daemon)
         for pattern in r.get("block_url_patterns", []):

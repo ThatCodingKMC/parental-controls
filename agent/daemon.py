@@ -128,6 +128,15 @@ def _load_app_list(subpath: str) -> list:
     return _clean_entries(p.read_text())
 
 
+def _load_block_exceptions() -> list:
+    """Domains that must NOT be caught by broad suffix bans in block_domains
+    (e.g. the ".io" ban). Checked ahead of block_domains in the proxy."""
+    p = _config_dir() / "lists" / "always" / "block_exceptions.txt"
+    if not p.exists():
+        return []
+    return _clean_entries(p.read_text())
+
+
 # ── Schedule helpers ──────────────────────────────────────────────────────────
 
 def _parse_time(s: str) -> dtime:
@@ -295,6 +304,7 @@ def build_proxy_rules(config: dict, mode: str, username: str) -> dict:
     return {
         "mode":                mode,
         "block_domains":       list(dict.fromkeys(block_domains)),
+        "block_exceptions":    _load_block_exceptions(),
         "block_url_patterns":  list(dict.fromkeys(block_url_patterns)),
         "allow_domains":       list(dict.fromkeys(allow_domains)),
         "site_limits_reached": site_limits_reached,

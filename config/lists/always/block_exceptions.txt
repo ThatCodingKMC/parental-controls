@@ -1,0 +1,5 @@
+# Exceptions to broad suffix bans in the blocklist (the ".io" ban in
+# blocked/distractions.txt blocks ALL *.io, so these must be carved back out).
+# A host matching any entry here is never blocked by block_domains.
+pendo.io     # Canvas in-app-guide helper
+github.io    # GitHub Pages (project pages / programming docs)
