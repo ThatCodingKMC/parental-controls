@@ -184,9 +184,31 @@ def _discord_allowed_now() -> bool:
     return now.minute % 30 >= 25 or now.hour >= 22 or now.hour < 9
 
 
+DISCORD_OVERRIDE_FILE = "/var/lib/adam-control/discord_override.json"
+
+
+def _discord_override_active() -> bool:
+    """Temporary 'Discord fully open until <timestamp>' override (independent of
+    free time). Self-expires: the file is deleted once the timestamp passes."""
+    try:
+        d = json.loads(Path(DISCORD_OVERRIDE_FILE).read_text())
+        until = datetime.fromisoformat(d["until"])
+    except Exception:
+        return False
+    if until > datetime.now():
+        return True
+    try:
+        Path(DISCORD_OVERRIDE_FILE).unlink()
+    except Exception:
+        pass
+    return False
+
+
 def _discord_open() -> bool:
-    """Whether Discord is currently reachable: inside a time window, or during
-    an active full-free grant."""
+    """Whether Discord is currently reachable: a temporary override, inside a
+    time window, or during an active full-free grant."""
+    if _discord_override_active():
+        return True
     g = grant_mod.active_grant()
     return _discord_allowed_now() or bool(g and g.get("mode") == "free")
 
