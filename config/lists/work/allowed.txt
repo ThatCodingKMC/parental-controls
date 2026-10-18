@@ -45,6 +45,7 @@ literatureandhistory.com  # literature & history educational site
 hypothes.is          # Hypothesis — web annotation (Canvas tool)
 mla.org              # MLA style / citation (style.mla.org)
 easybib.com          # EasyBib — citation generator
+scribbr.com          # Scribbr — citation generator / proofreading (MLA/APA guides)
 exlibrisgroup.com    # Ex Libris Primo/Alma — library catalog (efsc-flvc)
 libguides.com        # LibGuides — library research guides
 parchment.com        # Parchment — official transcripts / credentials
