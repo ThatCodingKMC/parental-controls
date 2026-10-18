@@ -7,4 +7,6 @@ zorr.pro
 # legit .io sites — pendo.io (a Canvas in-app-guide helper) and github.io
 # (GitHub Pages). Both are non-essential; remove this line if that becomes a
 # problem and block the specific game domains instead.
-io
+# TEMPORARILY UNBLOCKED 2026-10-18 per Dad ("just for today"). To re-ban all
+# .io games again, uncomment the `io` line below:
+# io
