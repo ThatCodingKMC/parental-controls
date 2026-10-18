@@ -9,7 +9,7 @@ import signal
 import subprocess
 import time
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 log = logging.getLogger("enforcer")
 
@@ -178,13 +178,18 @@ def vpn_active() -> tuple:
     return False, ""
 
 
-def _notify(username: str, title: str, body: str, urgency: str = "normal"):
+def _user_session_env(username: str) -> dict:
     uid = _get_uid(username)
-    env = {
+    return {
         **os.environ,
         "DISPLAY": _get_display(username),
         "DBUS_SESSION_BUS_ADDRESS": f"unix:path=/run/user/{uid}/bus",
+        "XDG_RUNTIME_DIR": f"/run/user/{uid}",
     }
+
+
+def _notify(username: str, title: str, body: str, urgency: str = "normal"):
+    env = _user_session_env(username)
     try:
         subprocess.run(
             ["sudo", "-u", username, "notify-send",
@@ -193,6 +198,79 @@ def _notify(username: str, title: str, body: str, urgency: str = "normal"):
         )
     except Exception:
         pass
+
+
+CHIME_FILE = "/var/lib/adam-control/chime.wav"
+
+
+def _ensure_chime() -> Optional[str]:
+    """Generate a short two-note chime WAV once (stdlib only — no extra
+    packages). Returns its path, or None if generation failed."""
+    p = Path(CHIME_FILE)
+    if p.exists():
+        return str(p)
+    try:
+        import wave, math, struct
+        rate = 44100
+        frames = bytearray()
+
+        def tone(freq: float, dur: float, vol: float = 0.4):
+            n = int(rate * dur)
+            for i in range(n):
+                env = max(0.0, min(i / (0.01 * rate), 1.0, (n - i) / (0.05 * rate)))
+                frames.extend(struct.pack(
+                    "<h", int(vol * env * 32767 * math.sin(2 * math.pi * freq * i / rate))
+                ))
+
+        tone(880.0, 0.12)    # A5
+        tone(1318.5, 0.20)   # E6
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with wave.open(str(p), "w") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(rate)
+            w.writeframes(bytes(frames))
+        return str(p)
+    except Exception:
+        return None
+
+
+def _play_sound(username: str):
+    """Play a short alert chime in Adam's session. Tries several players so it
+    works whether the Pi has PulseAudio, PipeWire, or ALSA; all failures are
+    swallowed (a missing sound must never break enforcement)."""
+    env = _user_session_env(username)
+    attempts = []
+    chime = _ensure_chime()
+    if chime:
+        attempts.append(["aplay", "-q", chime])
+    attempts += [
+        ["canberra-gtk-play", "-i", "message"],
+        ["paplay", "/usr/share/sounds/freedesktop/stereo/message.oga"],
+        ["aplay", "-q", "/usr/share/sounds/alsa/Front_Center.wav"],
+    ]
+    for cmd in attempts:
+        try:
+            r = subprocess.run(
+                ["sudo", "-u", username, *cmd],
+                env=env, timeout=5, capture_output=True,
+            )
+            if r.returncode == 0:
+                return
+        except Exception:
+            continue
+
+
+def send_discord_window_open(username: str):
+    """Fired on the rising edge of a Discord access window — chime + toast so
+    Adam knows he can hop on for the next few minutes."""
+    _play_sound(username)
+    _notify(
+        username,
+        "💬 Discord is open",
+        "Discord is available for the next few minutes.",
+        urgency="normal",
+    )
 
 
 # ── App blocking and tracking ─────────────────────────────────────────────────

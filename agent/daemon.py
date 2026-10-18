@@ -47,6 +47,7 @@ log = logging.getLogger("daemon")
 
 _last_mode: Optional[str]     = None
 _last_counting: Optional[bool] = None
+_last_discord_open: Optional[bool] = None   # for the "Discord opened" chime
 
 # Sticky activity category — survives quiet periods (persistent apps, idle)
 # so the budget keeps counting until he actually switches to schoolwork.
@@ -183,6 +184,13 @@ def _discord_allowed_now() -> bool:
     return now.minute % 30 >= 25 or now.hour >= 22 or now.hour < 9
 
 
+def _discord_open() -> bool:
+    """Whether Discord is currently reachable: inside a time window, or during
+    an active full-free grant."""
+    g = grant_mod.active_grant()
+    return _discord_allowed_now() or bool(g and g.get("mode") == "free")
+
+
 def _schedule_mode(config: dict) -> str:
     """Work out mode purely from clock-based schedule windows."""
     now = datetime.now().time().replace(second=0, microsecond=0)
@@ -274,9 +282,7 @@ def build_proxy_rules(config: dict, mode: str, username: str) -> dict:
     # checked after the whitelist in the proxy, so this overrides allowed.txt.
     # An active FREE grant also opens Discord (full free time == Discord too),
     # so it re-restricts automatically when the grant expires.
-    _grant = grant_mod.active_grant()
-    discord_open = _discord_allowed_now() or bool(_grant and _grant.get("mode") == "free")
-    if not discord_open:
+    if not _discord_open():
         block_domains += DISCORD_DOMAINS
 
     # URL patterns: always-on, plus work-specific if in work mode
@@ -538,7 +544,7 @@ def _enforce_apps(config: dict, mode: str, username: str, interval: int):
 
 def run_cycle(config: dict):
     global _last_mode, _warned_budget, _warned_session, _warned_sites
-    global _apps_blocked_today
+    global _apps_blocked_today, _last_discord_open
 
     username  = config.get("target_user", "adam")
     interval  = config.get("check_interval", 60)
@@ -640,6 +646,13 @@ def run_cycle(config: dict):
             if counting:
                 tracker.add_free_time(username, interval)
                 log.debug("Free activity detected (%s: %s) — budget ticked", kind, trigger)
+
+    # Chime when Discord's window opens (rising edge), but not while locked out
+    # and not on the daemon's first cycle (avoid a spurious chime on restart).
+    d_open = _discord_open()
+    if _last_discord_open is False and d_open and mode != "locked":
+        enforcer.send_discord_window_open(username)
+    _last_discord_open = d_open
 
     # Write live activity state for status page and notifications
     free_limit = _get_free_limit(config)
