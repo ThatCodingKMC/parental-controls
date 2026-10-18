@@ -57,9 +57,12 @@ budget:
   free_minutes:
     weekday: 180
     weekend: 180
+  # NO FREE TIME: an empty (00:00–00:00) window is never satisfied, so the
+  # budget is never spendable and the computer stays in work mode whenever it's
+  # on. To restore free time, set a real window (e.g. start 00:00 end 23:59).
   available_hours:
     start: "00:00"
-    end:   "23:59"
+    end:   "00:00"
 
 # ─── Blocking ────────────────────────────────────────────────────────────────
 # Two tiers only:
@@ -140,9 +143,8 @@ site_limits:
   - site: roblox.com
     minutes: 60
     applies_in: [free]
-  - site: "*.io"          # all .io browser games combined
-    minutes: 120
-    applies_in: [free]
+  # (*.io time-limit removed — all .io is now hard-blocked 24/7 via
+  #  config/lists/always/blocked/distractions.txt)
 
 # ─── Per-App Time Limits ──────────────────────────────────────────────────────
 app_limits:

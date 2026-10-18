@@ -92,6 +92,9 @@ merriam-webster.com
 # never burn free-time budget.
 proton.me            # email
 duckduckgo.com       # search
+# Discord: time-restricted. Whitelisted here, but the daemon force-blocks these
+# OUTSIDE its allowed windows (last 5 min of each hour, after 10pm, before 9am).
+# See _discord_allowed_now()/DISCORD_DOMAINS in daemon.py.
 discord.com          # chat
 discord.gg
 discordapp.com

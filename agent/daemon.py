@@ -62,6 +62,14 @@ _warned_apps: dict    = {}      # app  -> set of minutes warned
 # Apps over their daily limit — stays blocked until midnight
 _apps_blocked_today: set = set()
 
+# Discord is allowed only in narrow windows (see _discord_allowed_now). Outside
+# them these domains get force-added to block_domains every cycle. They stay in
+# the work whitelist (allowed.txt) so that inside a window they pass normally.
+DISCORD_DOMAINS = [
+    "discord.com", "discord.gg", "discordapp.com",
+    "discordapp.net", "discord.media",
+]
+
 
 # ── Config loading ────────────────────────────────────────────────────────────
 
@@ -158,6 +166,14 @@ def _is_on_hours(config: dict) -> bool:
     return _in_window(now, _parse_time(on), _parse_time(off))
 
 
+def _discord_allowed_now() -> bool:
+    """Discord is permitted only during: the last 5 minutes of any hour
+    (xx:55–xx:59), after 10pm (hour >= 22), or before 9am (hour < 9).
+    Outside these windows the Discord domains are blocked."""
+    now = datetime.now()
+    return now.minute >= 55 or now.hour >= 22 or now.hour < 9
+
+
 def _schedule_mode(config: dict) -> str:
     """Work out mode purely from clock-based schedule windows."""
     now = datetime.now().time().replace(second=0, microsecond=0)
@@ -244,6 +260,11 @@ def build_proxy_rules(config: dict, mode: str, username: str) -> dict:
         list(always.get("block_domains") or [])
         + _load_domain_dir("always/blocked")
     )
+
+    # Discord: blocked except during its allowed windows. block_domains is
+    # checked after the whitelist in the proxy, so this overrides allowed.txt.
+    if not _discord_allowed_now():
+        block_domains += DISCORD_DOMAINS
 
     # URL patterns: always-on, plus work-specific if in work mode
     block_url_patterns = (

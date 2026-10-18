@@ -2,3 +2,9 @@
 petalstudy.com
 scratch.mit.edu      # Scratch website (offline app is killed via blocked_apps)
 zorr.pro
+# Ban ALL .io games. The proxy matches this as a suffix, so every *.io host is
+# blocked (agar.io, slither.io, krunker.io, diep.io, …). NOTE: this also blocks
+# legit .io sites — pendo.io (a Canvas in-app-guide helper) and github.io
+# (GitHub Pages). Both are non-essential; remove this line if that becomes a
+# problem and block the specific game domains instead.
+io
