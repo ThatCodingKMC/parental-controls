@@ -20,7 +20,7 @@ import os
 import signal
 import sys
 import time
-from datetime import datetime, time as dtime
+from datetime import datetime, time as dtime, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -276,6 +276,28 @@ def _get_free_limit(config: dict) -> int:
     return config.get("budget", {}).get("free_minutes", {}).get(key, 0)
 
 
+def _free_minutes_left(config: dict, username: str, free_limit: int) -> int:
+    """Minutes until free mode ends, whichever comes first: an active grant's
+    expiry, or the daily budget running out / the available_hours window
+    closing. Drives the "free time running out" warnings."""
+    now = datetime.now()
+    g = grant_mod.active_grant()
+    if g and g.get("until"):
+        try:
+            return max(0, int((datetime.fromisoformat(g["until"]) - now).total_seconds() // 60))
+        except Exception:
+            pass
+    left = tracker.get_free_remaining_minutes(username, free_limit)
+    avail = config.get("budget", {}).get("available_hours", {})
+    if avail:
+        end = _parse_time(avail.get("end", "23:59"))
+        end_dt = now.replace(hour=end.hour, minute=end.minute, second=0, microsecond=0)
+        if end_dt <= now:
+            end_dt += timedelta(days=1)
+        left = min(left, int((end_dt - now).total_seconds() // 60))
+    return left
+
+
 def _get_daily_limit(config: dict) -> int:
     day = datetime.now().weekday()
     key = "weekend" if day >= 5 else "weekday"
@@ -506,11 +528,13 @@ def _free_activity_detected(config: dict, interval: int) -> tuple:
 
 def _warn_at(current: int, thresholds: set, warned: set,
              send_fn, *args) -> set:
-    """Call send_fn(*args, minutes) for each threshold not yet warned."""
-    for t in sorted(thresholds, reverse=True):
-        if current <= t and t not in warned:
-            send_fn(*args, t)
-            warned = warned | {t}
+    """Warn once for the thresholds just crossed. If several are crossed at
+    once (e.g. after a restart or a mid-day grant), send only the most urgent
+    one instead of a burst of toasts."""
+    crossed = {t for t in thresholds if current <= t and t not in warned}
+    if crossed:
+        send_fn(*args, min(crossed))
+        warned = warned | crossed
     return warned
 
 
@@ -592,9 +616,12 @@ def run_cycle(config: dict):
             sess_rem, {5, 1}, _warned_session, enforcer.send_warning, username
         )
 
-        # Free budget warnings (budget mode only)
+        # Free-time-ending warnings (budget mode only). Re-arm them each time
+        # free mode starts, so a grant given later in the day warns again.
         if config.get("mode_strategy") == "budget" and mode == "free":
-            bud_rem = tracker.get_free_remaining_minutes(username, free_limit)
+            if _last_mode != "free":
+                _warned_budget = set()
+            bud_rem = _free_minutes_left(config, username, free_limit)
             _warned_budget = _warn_at(
                 bud_rem, {60, 30, 10, 5, 1}, _warned_budget,
                 enforcer.send_budget_warning, username
@@ -651,6 +678,14 @@ def run_cycle(config: dict):
             enforcer.restore_login()   # bring lightdm back at on-hours
         elif _last_mode != mode:
             log.info("→ %s (%s)", mode.upper(), source)
+            if _last_mode == "free" and mode == "work":
+                # Free time just ended. Games left open in a tab never make a
+                # new request for the proxy to block, so close the browser.
+                enforcer.close_browsers(
+                    username,
+                    "Free time is over — closing the browser now. "
+                    "Reopen it for schoolwork.",
+                )
 
         enforcer.apply_hosts_blocklist(rules["block_domains"])
         _enforce_apps(config, mode, username, interval)

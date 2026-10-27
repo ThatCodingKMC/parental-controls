@@ -97,8 +97,31 @@ def send_app_warning(username: str, app: str, minutes_remaining: int):
 
 
 def send_budget_warning(username: str, minutes_remaining: int):
-    msg = f"You have {minutes_remaining} minute(s) of free time left today."
+    msg = (f"You have {minutes_remaining} minute(s) of free time left today. "
+           f"When it ends the browser will close — save any schoolwork.")
     _notify(username, "⏰ Free Time Running Out", msg, urgency="normal")
+
+
+BROWSERS = ["chromium", "chromium-browser", "firefox", "firefox-esr"]
+
+
+def close_browsers(username: str, message: str, grace_seconds: int = 5):
+    """Close every browser in the user's session when free time ends.
+
+    A game already loaded in a tab keeps running without making any new
+    request, so the proxy alone can't stop it. SIGTERM goes to each browser's
+    main (oldest) process so Chromium shuts down cleanly and saves its session
+    (school tabs restore on reopen; game tabs then hit the block page). Anything
+    still alive after a few seconds is SIGKILLed.
+    """
+    _notify(username, "⏰ Free time is over", message, urgency="critical")
+    time.sleep(grace_seconds)
+    for b in BROWSERS:
+        _run(["pkill", "-TERM", "-o", "-u", username, "-x", b])
+    time.sleep(4)
+    for b in BROWSERS:
+        _run(["pkill", "-KILL", "-u", username, "-x", b])
+    log.info("Closed browsers for %s (free time ended)", username)
 
 
 def send_activity_counting(username: str, trigger: str, kind: str,

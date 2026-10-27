@@ -54,14 +54,15 @@ schedule:
 # Free budget can only be spent during available_hours (optional).
 # Change start to e.g. "17:00" to force work mode before then.
 budget:
-  # 0 = UNLIMITED free time (NOT zero). The 10am cutoff below is what bounds it.
+  # Max free minutes per day (NOTE: 0 would mean UNLIMITED, not zero).
   free_minutes:
-    weekday: 0
-    weekend: 0
-  # FREE UNTIL 10AM, DAILY: free mode from the start of the day until 10:00,
-  # then work mode for the rest of the day. (Computer on-hours start 06:30, so
-  # the effective free window each day is 06:30–10:00.) To go back to no free
-  # time, set start and end both to "00:00".
+    weekday: 180
+    weekend: 180
+  # FREE UNTIL 10AM, DAILY: up to 180 min of free time, spendable only before
+  # 10:00 — whichever runs out first ends free time, then work mode for the rest
+  # of the day. (Computer on-hours start 06:30, so the window is 06:30–10:00.)
+  # When free time ends the browser is closed so open game tabs stop too.
+  # To go back to no free time, set start and end both to "00:00".
   available_hours:
     start: "00:00"
     end:   "10:00"

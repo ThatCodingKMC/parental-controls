@@ -24,6 +24,7 @@ RULES_FILE   = "/var/lib/adam-control/proxy_rules.json"
 USAGE_FILE   = "/var/lib/adam-control/site_usage.json"
 BLOCKED_FILE = "/var/lib/adam-control/blocked_recent.json"  # what got blocked (debug)
 RELOAD_SECS  = 5   # re-read rules file at most every N seconds
+WS_RECHECK_SECS = 2  # re-check an open WebSocket against the rules at most this often
 
 BLOCK_HTML = """\
 <!DOCTYPE html>
@@ -271,6 +272,44 @@ class AdamControl:
 
         # Record visit for per-site timer (only track main-frame requests)
         if flow.request.method in ("GET", "POST"):
+            self._record_visit(host)
+
+    def websocket_message(self, flow: http.HTTPFlow):
+        """Re-check long-lived WebSockets against the CURRENT rules.
+
+        `request` only runs when a connection opens, so a game or Discord
+        socket opened during free time would otherwise keep working forever
+        after the rules change. mitmproxy can't kill a WebSocket in transit
+        (flow.kill() is ignored mid-stream), so a socket that is now blocked
+        has every message dropped: the app goes dead, and its reconnect attempt
+        is refused in `request`.
+        """
+        meta = flow.metadata
+        msg = flow.websocket.messages[-1]
+        if meta.get("ac_cut"):
+            msg.drop()
+            return
+        now = time.monotonic()
+        if now - meta.get("ac_checked", 0.0) < WS_RECHECK_SECS:
+            return
+        meta["ac_checked"] = now
+        self._maybe_reload()
+
+        host = flow.request.pretty_host
+        url  = flow.request.pretty_url
+        blocked, reason, _ = self._check(host, url)
+        if blocked:
+            meta["ac_cut"] = True
+            self._log_block(host, url, f"{reason} (open socket cut)")
+            msg.drop()
+            return
+
+        # Socket traffic counts as activity on this site (at most once a
+        # minute), so a game running purely over its socket still ticks the
+        # free budget instead of looking idle.
+        minute = int(time.time() // 60)
+        if meta.get("ac_recorded") != minute:
+            meta["ac_recorded"] = minute
             self._record_visit(host)
 
 
