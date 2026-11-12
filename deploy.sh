@@ -38,6 +38,11 @@ ssh "$TARGET" "
     sudo cp -r config/lists/. /etc/adam-control/lists/ && \
     sudo cp config/schedule.yaml /etc/adam-control/schedule.yaml && \
     sudo install -D -m 644 config/chromium-policy.json /etc/chromium/policies/managed/adam-control.json && \
+    sudo chmod 755 /opt/adam-control/freetime.py && \
+    sudo install -m 755 config/freetime/freetime /usr/local/bin/freetime && \
+    sudo install -m 644 config/freetime/adam-freetime.desktop /usr/share/applications/adam-freetime.desktop && \
+    sudo visudo -cqf config/freetime/sudoers && \
+    sudo install -m 440 config/freetime/sudoers /etc/sudoers.d/adam-freetime && \
     sudo systemctl restart adam-control-proxy && \
     sleep 1 && \
     sudo systemctl restart adam-control && \

@@ -136,6 +136,9 @@ def main():
     if active_grant:
         print(f"╠══ Active Grant {'═'*35}")
         print(f"║  Mode: {active_grant.get('mode','?').upper()}  until {active_grant.get('until','?')[11:16]}")
+    elif grant_mod.paused_grant():
+        print(f"╠══ Free Time PAUSED {'═'*31}")
+        print(f"║  {grant_mod.remaining_seconds() // 60} min saved — Adam starts it with the Free Time button")
 
     print(f"╚{'═'*51}\n")
 

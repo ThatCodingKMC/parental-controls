@@ -1,0 +1,4 @@
+# Installed to /etc/sudoers.d/adam-freetime by deploy.sh.
+# Lets Adam pause/resume his own awarded free time. The script is root-owned
+# and can only pause/resume. It can never add time.
+adam ALL=(root) NOPASSWD: /opt/adam-control/freetime.py

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Free Time
+GenericName=Pause / start free time
+Comment=Pause or start your awarded free time
+Exec=/usr/local/bin/freetime toggle
+Icon=appointment-soon
+Terminal=false
+Categories=Utility;

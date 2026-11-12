@@ -596,12 +596,15 @@ def _enforce_apps(config: dict, mode: str, username: str, interval: int):
 
 # ── Main cycle ────────────────────────────────────────────────────────────────
 
-def run_cycle(config: dict):
+def run_cycle(config: dict, elapsed: Optional[int] = None):
     global _last_mode, _warned_budget, _warned_session, _warned_sites
     global _apps_blocked_today, _last_discord_open
 
     username  = config.get("target_user", "adam")
     interval  = config.get("check_interval", 60)
+    # Seconds since the last cycle. Usually == interval, but shorter when a
+    # pause/resume/award woke the loop early. Time tracking uses this.
+    tick      = interval if elapsed is None else max(0, min(int(elapsed), interval))
     lock_msg  = config.get("lock_message", "Computer time is over.")
 
     mode = current_mode(config, username)
@@ -696,14 +699,18 @@ def run_cycle(config: dict):
             if _last_mode == "free" and mode == "work":
                 # Free time just ended. Games left open in a tab never make a
                 # new request for the proxy to block, so close the browser.
-                enforcer.close_browsers(
-                    username,
+                paused = grant_mod.paused_grant()
+                msg = (
+                    f"Free time paused — {int(paused.get('remaining', 0)) // 60} min "
+                    "saved. Closing the browser now. Reopen it for schoolwork."
+                    if paused else
                     "Free time is over — closing the browser now. "
-                    "Reopen it for schoolwork.",
+                    "Reopen it for schoolwork."
                 )
+                enforcer.close_browsers(username, msg)
 
         enforcer.apply_hosts_blocklist(rules["block_domains"])
-        _enforce_apps(config, mode, username, interval)
+        _enforce_apps(config, mode, username, tick)
 
     # ── Track time + activity state ──
 
@@ -712,11 +719,11 @@ def run_cycle(config: dict):
     kind      = ""
 
     if mode != "locked" and user_active:
-        tracker.add_session_time(username, interval)
+        tracker.add_session_time(username, tick)
         if mode == "free":
             counting, trigger, kind = _free_activity_detected(config, interval)
             if counting:
-                tracker.add_free_time(username, interval)
+                tracker.add_free_time(username, tick)
                 log.debug("Free activity detected (%s: %s) — budget ticked", kind, trigger)
 
     # Chime when Discord's window opens (rising edge), but not while locked out
@@ -833,18 +840,36 @@ def main():
     signal.signal(signal.SIGINT,  handle_signal)
 
     interval = 60
+    elapsed  = None
     while True:
+        started = time.monotonic()
         try:
             config   = load_config()
             interval = config.get("check_interval", 60)
-            run_cycle(config)
+            run_cycle(config, elapsed)
         except FileNotFoundError:
             log.error("Config not found at %s", CONFIG_PATH)
         except yaml.YAMLError as e:
             log.error("Config parse error: %s", e)
         except Exception as e:
             log.exception("Unexpected error: %s", e)
-        time.sleep(interval)
+        # Sleep in 1s steps and wake early if the grant file changes (Adam
+        # pressed Free Time, or Dad awarded time) so it takes effect at once.
+        stamp = _grant_stamp()
+        while time.monotonic() - started < interval:
+            time.sleep(1)
+            if _grant_stamp() != stamp:
+                log.info("Grant changed — re-checking now")
+                break
+        elapsed = time.monotonic() - started
+
+
+def _grant_stamp():
+    try:
+        st = os.stat(grant_mod.GRANT_FILE)
+        return (st.st_ino, st.st_mtime_ns)
+    except FileNotFoundError:
+        return None
 
 
 if __name__ == "__main__":

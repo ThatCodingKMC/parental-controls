@@ -1,0 +1,3 @@
+#!/bin/sh
+# Adam's Free Time switch (installed to /usr/local/bin/freetime).
+exec sudo -n /opt/adam-control/freetime.py "$@"
