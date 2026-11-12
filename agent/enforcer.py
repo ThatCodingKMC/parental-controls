@@ -107,8 +107,10 @@ BROWSERS = ["chromium", "chromium-browser", "firefox", "firefox-esr"]
 
 
 BROWSER_POLICY_FILE = "/etc/chromium/policies/managed/adam-control-mode.json"
-# Browser-internal pages that must keep working (new tab, settings, etc.).
-_BROWSER_ALWAYS_OK = ["chrome://*", "chrome-search://*", "about:blank"]
+# Always allowed in the browser: internal pages (new tab, settings) and local
+# files — Dad allows Adam's own projects and downloaded PDFs. (Chromium can't
+# filter file:// by type, so this allows any local file.)
+_BROWSER_ALWAYS_OK = ["chrome://*", "chrome-search://*", "about:blank", "file://*"]
 
 
 def set_browser_lockdown(allow_domains: Optional[List[str]]):
@@ -117,8 +119,9 @@ def set_browser_lockdown(allow_domains: Optional[List[str]]):
     The proxy only sees network traffic, so a game saved as a local file, a
     page served from the browser's offline cache (service worker), or a
     localhost server never reaches it. URLBlocklist ["*"] + URLAllowlist makes
-    Chromium itself refuse everything not on the school list — file://,
-    localhost and cached pages included. Pass None to lift it (earned time).
+    Chromium itself refuse everything not on the school list — localhost
+    servers and offline-cached pages included (local files are allowed).
+    Pass None to lift it (earned time).
     Chromium watches this directory, so changes apply without a restart.
     Only rewritten when the content changes.
     """
