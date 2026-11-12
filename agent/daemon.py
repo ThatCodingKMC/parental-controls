@@ -365,6 +365,14 @@ def build_proxy_rules(config: dict, mode: str, username: str) -> dict:
     }
 
 
+def _work_whitelist(config: dict) -> list:
+    """The school whitelist (schedule.yaml allow_domains + work/allowed.txt)."""
+    work = config.get("blocking", {}).get("work", {})
+    return list(dict.fromkeys(
+        list(work.get("allow_domains") or []) + _load_allowed_file("work")
+    ))
+
+
 def write_proxy_rules(rules: dict):
     Path(PROXY_RULES).parent.mkdir(parents=True, exist_ok=True)
     Path(PROXY_RULES).write_text(json.dumps(rules, indent=2))
@@ -660,6 +668,7 @@ def run_cycle(config: dict):
 
     if mode == "locked":
         write_proxy_rules(build_proxy_rules(config, "locked", username))
+        enforcer.set_browser_lockdown(_work_whitelist(config))
         if _last_mode != "locked":
             log.info("→ LOCKED (%s)", source)
             enforcer.clear_hosts_rules()
@@ -672,6 +681,12 @@ def run_cycle(config: dict):
     else:
         rules = build_proxy_rules(config, mode, username)
         write_proxy_rules(rules)
+        # Browser-side whitelist (catches offline/local games the proxy can't
+        # see). Applied before any browser close below, so a reopened browser
+        # comes back locked down; lifted only during free time.
+        enforcer.set_browser_lockdown(
+            None if mode == "free" else _work_whitelist(config)
+        )
 
         if _last_mode == "locked":
             log.info("→ %s (%s)", mode.upper(), source)

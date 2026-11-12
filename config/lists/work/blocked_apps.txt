@@ -6,3 +6,4 @@ lutris
 heroic
 vlc
 obs
+firefox      # second browser: the Chromium policy lockdown doesn't cover it

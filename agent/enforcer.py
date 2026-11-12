@@ -3,6 +3,7 @@ Enforcement actions: session lock, app kills, /etc/hosts, and proxy management.
 All functions require root privileges.
 """
 
+import json
 import logging
 import os
 import signal
@@ -103,6 +104,42 @@ def send_budget_warning(username: str, minutes_remaining: int):
 
 
 BROWSERS = ["chromium", "chromium-browser", "firefox", "firefox-esr"]
+
+
+BROWSER_POLICY_FILE = "/etc/chromium/policies/managed/adam-control-mode.json"
+# Browser-internal pages that must keep working (new tab, settings, etc.).
+_BROWSER_ALWAYS_OK = ["chrome://*", "chrome-search://*", "about:blank"]
+
+
+def set_browser_lockdown(allow_domains: Optional[List[str]]):
+    """Enforce the whitelist INSIDE Chromium via admin policy.
+
+    The proxy only sees network traffic, so a game saved as a local file, a
+    page served from the browser's offline cache (service worker), or a
+    localhost server never reaches it. URLBlocklist ["*"] + URLAllowlist makes
+    Chromium itself refuse everything not on the school list — file://,
+    localhost and cached pages included. Pass None to lift it (earned time).
+    Chromium watches this directory, so changes apply without a restart.
+    Only rewritten when the content changes.
+    """
+    p = Path(BROWSER_POLICY_FILE)
+    if allow_domains is None:
+        if p.exists():
+            p.unlink()
+            log.info("Browser lockdown lifted")
+        return
+    text = json.dumps({
+        "URLBlocklist": ["*"],
+        "URLAllowlist": sorted(set(allow_domains)) + _BROWSER_ALWAYS_OK,
+    }, indent=2)
+    try:
+        if p.exists() and p.read_text() == text:
+            return
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text)
+        log.info("Browser lockdown applied (%d allowed domains)", len(allow_domains))
+    except Exception as e:
+        log.warning("Could not write browser policy: %s", e)
 
 
 def close_browsers(username: str, message: str, grace_seconds: int = 5):
