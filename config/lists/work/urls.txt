@@ -8,3 +8,12 @@ khanacademy\.org/(computer-programming|cs)(/|$)
 
 # Block YouTube search for non-educational queries (blocks the results page)
 # youtube\.com/results\?search_query=(?!.*tutorial|.*lesson|.*how.to|.*math|.*science)
+
+# ── Google's built-in games ──────────────────────────────────────────────────
+# Searching "minesweeper", "snake", "solitaire", "pac-man", "tic tac toe" etc.
+# gives a playable game right on google.com (which must stay whitelisted for
+# school), so block the game SEARCHES, plus /fbx — the path Google serves
+# those in-page games from — and the playable doodle archive.
+google\.[a-z.]+/(search|complete/search)\?(.*&)?q=[^&]*(minesweeper|snake|solitaire|pac[^&a-z]{0,3}man|tic[^&a-z]{0,3}tac|dino|t[^&a-z]{0,3}rex|spinner|fidget|arcade|doodle|game)
+google\.[a-z.]+/(fbx|logos/|doodles)
+[?&]fbx=

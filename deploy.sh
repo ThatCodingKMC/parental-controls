@@ -37,6 +37,7 @@ ssh "$TARGET" "
     sudo cp agent/*.py /opt/adam-control/ && \
     sudo cp -r config/lists/. /etc/adam-control/lists/ && \
     sudo cp config/schedule.yaml /etc/adam-control/schedule.yaml && \
+    sudo install -D -m 644 config/chromium-policy.json /etc/chromium/policies/managed/adam-control.json && \
     sudo systemctl restart adam-control-proxy && \
     sleep 1 && \
     sudo systemctl restart adam-control && \

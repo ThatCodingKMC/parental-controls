@@ -60,6 +60,19 @@ def cmd_grant(mode: str, minutes: int, extend: bool):
     until_dt = datetime.fromisoformat(until)
     action = "Extended" if extend else "Granted"
     print(f"{action}: {mode} mode until {until_dt.strftime('%H:%M:%S')} ({minutes} min)")
+    if mode == "free":
+        _tell_adam(f"🎉 You earned {minutes} min of free time",
+                   f"Free time until {until_dt.strftime('%-I:%M %p')}.")
+
+
+def _tell_adam(title: str, body: str):
+    """Best-effort desktop toast so Adam sees the award land."""
+    try:
+        sys.path.insert(0, str(Path(__file__).parent))
+        import enforcer
+        enforcer._notify("adam", title, body)
+    except Exception:
+        pass
 
 
 def cmd_clear():
