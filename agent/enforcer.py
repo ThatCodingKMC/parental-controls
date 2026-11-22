@@ -580,3 +580,54 @@ def _get_display(username: str) -> str:
         return d if d else ":0"
     except Exception:
         return ":0"
+
+
+# ── Screenshots (for Dad to review) ───────────────────────────────────────────
+
+SCREENS_DIR = "/var/lib/adam-control/screens"   # root-only (0700); Adam can't see it
+SCREENS_KEEP_DAYS = 7
+
+
+def take_screenshot(username: str, label: str) -> Optional[str]:
+    """Capture Adam's screen as a JPEG under SCREENS_DIR/<date>/<time>_<label>.jpg.
+    grim runs inside his Wayland session and streams PNG to stdout, so nothing
+    is written anywhere he can reach. Returns the saved path, or None."""
+    uid = _get_uid(username)
+    rt = f"/run/user/{uid}"
+    if not os.path.exists(f"{rt}/wayland-0"):
+        return None   # not logged in to a desktop
+    try:
+        r = subprocess.run(
+            ["sudo", "-u", username, "env", f"XDG_RUNTIME_DIR={rt}",
+             "WAYLAND_DISPLAY=wayland-0", "grim", "-l", "1", "-"],
+            capture_output=True, timeout=20,
+        )
+        if r.returncode != 0 or not r.stdout:
+            log.debug("Screenshot failed: %s", r.stderr.decode(errors="replace").strip())
+            return None
+        import io
+        from datetime import datetime
+        from PIL import Image
+        now = datetime.now()
+        day = Path(SCREENS_DIR) / now.strftime("%Y-%m-%d")
+        day.mkdir(parents=True, exist_ok=True)
+        os.chmod(SCREENS_DIR, 0o700)
+        out = day / f"{now:%H%M%S}_{label}.jpg"
+        Image.open(io.BytesIO(r.stdout)).convert("RGB").save(out, quality=60)
+        return str(out)
+    except Exception as e:
+        log.debug("Screenshot error: %s", e)
+        return None
+
+
+def prune_screenshots(keep_days: int = SCREENS_KEEP_DAYS):
+    """Delete day folders older than keep_days."""
+    import shutil
+    from datetime import date, timedelta
+    cutoff = (date.today() - timedelta(days=keep_days)).isoformat()
+    root = Path(SCREENS_DIR)
+    if not root.is_dir():
+        return
+    for d in root.iterdir():
+        if d.is_dir() and d.name < cutoff:
+            shutil.rmtree(d, ignore_errors=True)

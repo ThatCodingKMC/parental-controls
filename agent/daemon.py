@@ -821,6 +821,8 @@ def main():
     enforcer.block_proxy_bypass()   # close IPv6/QUIC holes so nothing skips the proxy
     log.info("Closed proxy-bypass holes (IPv6 + QUIC)")
 
+    _start_screenshot_thread()
+
     import status_server
     port = status_server.start()
     if port:
@@ -862,6 +864,36 @@ def main():
                 log.info("Grant changed — re-checking now")
                 break
         elapsed = time.monotonic() - started
+
+
+def _start_screenshot_thread():
+    """Screenshot Adam's screen at random 1–4 min intervals (random so he
+    can't time around it) whenever he's logged in and not locked out.
+    Filenames carry the mode (free/work) so work-time gaming stands out."""
+    import random
+    import threading
+
+    def loop():
+        last_prune = 0.0
+        while True:
+            time.sleep(random.uniform(60, 240))
+            try:
+                mode = _last_mode
+                if mode in (None, "locked"):
+                    continue
+                user = load_config().get("target_user", "adam")
+                path = enforcer.take_screenshot(user, mode)
+                if path:
+                    log.debug("Screenshot: %s", path)
+                if time.time() - last_prune > 3600:
+                    enforcer.prune_screenshots()
+                    last_prune = time.time()
+            except Exception as e:
+                log.warning("Screenshot thread: %s", e)
+
+    threading.Thread(target=loop, name="screenshots", daemon=True).start()
+    log.info("Screenshots on: random 1–4 min, kept %d days in %s",
+             enforcer.SCREENS_KEEP_DAYS, enforcer.SCREENS_DIR)
 
 
 def _grant_stamp():
