@@ -7,7 +7,7 @@
 #
 # Screenshots are taken about every 7 min (randomly 5–9) while he's logged
 # in, tagged FREE or WORK by the mode at the time. The Pi keeps the last 24
-# hours. Copies here are kept in ~/adam-screens until you delete them.
+# hours, and ~/adam-screens mirrors it: older copies here are deleted on sync.
 
 set -euo pipefail
 
@@ -17,7 +17,7 @@ DAY="${1:-}"
 
 mkdir -p "$DEST"
 echo "-> Syncing screenshots from $TARGET..."
-rsync -a --rsync-path="sudo rsync" "$TARGET:/var/lib/adam-control/screens/" "$DEST/"
+rsync -a --delete --exclude index.html --rsync-path="sudo rsync" "$TARGET:/var/lib/adam-control/screens/" "$DEST/"
 
 python3 - "$DEST" "$DAY" <<'PY'
 import html, sys
