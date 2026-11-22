@@ -5,9 +5,9 @@
 #   ./screens.sh          — sync and open the gallery (newest first)
 #   ./screens.sh 2026-11-21 — only show that day
 #
-# Screenshots are taken every 1–4 min (random) while he's logged in, tagged
-# FREE or WORK by the mode at the time. The Pi keeps 7 days. Copies here are
-# kept in ~/adam-screens until you delete them.
+# Screenshots are taken about every 7 min (randomly 5–9) while he's logged
+# in, tagged FREE or WORK by the mode at the time. The Pi keeps the last 24
+# hours. Copies here are kept in ~/adam-screens until you delete them.
 
 set -euo pipefail
 

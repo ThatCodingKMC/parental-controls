@@ -867,16 +867,15 @@ def main():
 
 
 def _start_screenshot_thread():
-    """Screenshot Adam's screen at random 1–4 min intervals (random so he
+    """Screenshot Adam's screen about every 7 min (randomly 5–9, so he
     can't time around it) whenever he's logged in and not locked out.
     Filenames carry the mode (free/work) so work-time gaming stands out."""
     import random
     import threading
 
     def loop():
-        last_prune = 0.0
         while True:
-            time.sleep(random.uniform(60, 240))
+            time.sleep(random.uniform(300, 540))
             try:
                 mode = _last_mode
                 if mode in (None, "locked"):
@@ -885,15 +884,13 @@ def _start_screenshot_thread():
                 path = enforcer.take_screenshot(user, mode)
                 if path:
                     log.debug("Screenshot: %s", path)
-                if time.time() - last_prune > 3600:
-                    enforcer.prune_screenshots()
-                    last_prune = time.time()
+                enforcer.prune_screenshots()
             except Exception as e:
                 log.warning("Screenshot thread: %s", e)
 
     threading.Thread(target=loop, name="screenshots", daemon=True).start()
-    log.info("Screenshots on: random 1–4 min, kept %d days in %s",
-             enforcer.SCREENS_KEEP_DAYS, enforcer.SCREENS_DIR)
+    log.info("Screenshots on: every ~7 min, kept %d h in %s",
+             enforcer.SCREENS_KEEP_HOURS, enforcer.SCREENS_DIR)
 
 
 def _grant_stamp():

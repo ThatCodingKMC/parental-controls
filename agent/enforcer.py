@@ -585,7 +585,7 @@ def _get_display(username: str) -> str:
 # ── Screenshots (for Dad to review) ───────────────────────────────────────────
 
 SCREENS_DIR = "/var/lib/adam-control/screens"   # root-only (0700); Adam can't see it
-SCREENS_KEEP_DAYS = 7
+SCREENS_KEEP_HOURS = 24
 
 
 def take_screenshot(username: str, label: str) -> Optional[str]:
@@ -620,14 +620,22 @@ def take_screenshot(username: str, label: str) -> Optional[str]:
         return None
 
 
-def prune_screenshots(keep_days: int = SCREENS_KEEP_DAYS):
-    """Delete day folders older than keep_days."""
-    import shutil
-    from datetime import date, timedelta
-    cutoff = (date.today() - timedelta(days=keep_days)).isoformat()
+def prune_screenshots(keep_hours: int = SCREENS_KEEP_HOURS):
+    """Delete screenshots older than keep_hours, and empty day folders."""
     root = Path(SCREENS_DIR)
     if not root.is_dir():
         return
+    cutoff = time.time() - keep_hours * 3600
     for d in root.iterdir():
-        if d.is_dir() and d.name < cutoff:
-            shutil.rmtree(d, ignore_errors=True)
+        if not d.is_dir():
+            continue
+        for f in d.glob("*.jpg"):
+            try:
+                if f.stat().st_mtime < cutoff:
+                    f.unlink()
+            except FileNotFoundError:
+                pass
+        try:
+            d.rmdir()   # only succeeds if empty
+        except OSError:
+            pass
